@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HaniTech Master Super Admin</title>
+<style>
+  :root {
+    --bg: #070b14;
+    --bg-elevated: #0d1424;
+    --card: #111a2e;
+    --card-hover: #16223b;
+    --border: #1e2d4a;
+    --border-light: #2a3f66;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --primary-glow: rgba(59, 130, 246, 0.25);
+    --accent: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #06b6d4;
+    --purple: #8b5cf6;
+  }
+
+  body.light-mode {
+    --bg: #f1f5f9;
+    --bg-elevated: #ffffff;
+    --card: #ffffff;
+    --card-hover: #f8fafc;
+    --border: #e2e8f0;
+    --border-light: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-size: 14.5px; min-height: 100vh; overflow-x: hidden; transition: background 0.25s, color 0.25s; }
+
+  input, select, textarea {
+    width: 100%; padding: 11px 13px; font-size: 14px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    background: var(--bg); color: var(--text); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+  }
+  label { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+  /* LOGIN */
+  #loginScreen {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle at top right, #1e293b 0%, #070b14 65%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; z-index: 3000;
+  }
+  .login-box {
+    background: #111a2e; border: 1px solid #2a3f66;
+    border-radius: 22px; box-shadow: 0 25px 70px rgba(0,0,0,0.65);
+    padding: 36px 28px; width: 100%; max-width: 410px;
+    border-top: 4px solid var(--accent);
+  }
+  .login-logo {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #070b14; font-size: 26px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; box-shadow: 0 10px 25px rgba(245,158,11,0.3);
+  }
+  .login-box h1 { text-align: center; color: #f8fafc; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .login-box .sub { text-align: center; color: #94a3b8; font-size: 12.5px; margin-bottom: 22px; }
+  .form-group { margin-bottom: 14px; }
+  .btn-login {
+    width: 100%; padding: 14px; font-size: 15px; font-weight: 800;
+    border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff; cursor: pointer; margin-top: 6px;
+    box-shadow: 0 8px 20px rgba(37,99,235,0.35);
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .btn-login:hover { opacity: 0.94; transform: translateY(-1px); }
+  #loginError {
+    color: #fca5a5; background: rgba(239,68,68,0.14); border: 1px solid rgba(239,68,68,0.4);
+    padding: 10px; border-radius: 10px; text-align: center;
+    margin-bottom: 14px; font-size: 13px; font-weight: 600; display: none;
+  }
+
+  /* APP SHELL */
+  #app { display: none; min-height: 100vh; }
+
+  /* SIDEBAR */
+  #sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 264px;
+    background: var(--bg-elevated); border-right: 1px solid var(--border);
+    z-index: 200; display: flex; flex-direction: column;
+    transform: translateX(-100%); transition: transform 0.28s ease;
+  }
+  #sidebar.open { transform: translateX(0); }
+  .sb-brand {
+    padding: 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .sb-badge-logo {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #070b14; font-size: 20px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .sb-brand h1 { font-size: 16px; font-weight: 800; color: var(--text); }
+  .sb-brand small { display: block; color: var(--accent); font-size: 11px; font-weight: 700; margin-top: 2px; }
+
+  .sb-nav { flex: 1; overflow-y: auto; padding: 12px 10px; }
+  .sb-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 11px 14px; border-radius: 11px;
+    cursor: pointer; font-size: 13.5px; font-weight: 600;
+    color: var(--muted); margin-bottom: 4px;
+    transition: all 0.15s;
+  }
+  .sb-item:hover { background: var(--card); color: var(--text); }
+  .sb-item.active {
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(37,99,235,0.12));
+    border: 1px solid rgba(59,130,246,0.35);
+    color: #60a5fa;
+  }
+  body.light-mode .sb-item.active { color: #2563eb; }
+  .sb-item .icon { width: 20px; text-align: center; font-size: 16px; }
+  .sb-item .badge {
+    margin-left: auto; background: var(--danger); color: #fff;
+    padding: 2px 7px; border-radius: 10px; font-size: 10.5px; font-weight: 800;
+  }
+
+  .sb-footer { padding: 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+  .btn-logout {
+    width: 100%; padding: 10px; background: rgba(239,68,68,0.14);
+    color: #f87171; border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-logout:hover { background: var(--danger); color: #fff; }
+  .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(2px); }
+  .sb-overlay.show { display: block; }
+
+  /* MAIN AREA */
+  #main { padding: 16px; padding-bottom: 92px; transition: margin-left 0.28s ease; }
+
+  /* TOPBAR & PROJECT SWITCHER */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; gap: 10px; flex-wrap: wrap;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .topbar h2 { font-size: 19px; font-weight: 800; color: var(--text); }
+  .hamburger {
+    display: none; background: var(--card); border: 1px solid var(--border);
+    width: 40px; height: 40px; border-radius: 10px; font-size: 18px;
+    cursor: pointer; color: var(--text);
+  }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 7px 11px; border-radius: 10px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .user-chip {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 7px 12px; border-radius: 20px;
+    font-size: 11.5px; font-weight: 700; color: var(--accent);
+  }
+
+  /* PROJECT SWITCHER BAR */
+  .project-switcher {
+    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 16px;
+    scrollbar-width: none;
+  }
+  .project-switcher::-webkit-scrollbar { display: none; }
+  .proj-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 14px; border-radius: 12px; white-space: nowrap;
+    background: var(--card); border: 1.5px solid var(--border);
+    color: var(--muted); font-size: 12.5px; font-weight: 700;
+    cursor: pointer; transition: all 0.18s;
+  }
+  .proj-pill:hover { border-color: var(--border-light); color: var(--text); }
+  .proj-pill.active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-color: #60a5fa; color: #fff;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+  }
+  .proj-pill .count-tag {
+    background: rgba(255,255,255,0.14); padding: 1px 7px;
+    border-radius: 8px; font-size: 11px; font-weight: 800;
+  }
+  .proj-pill.active .count-tag { background: rgba(255,255,255,0.25); color: #fff; }
+
+  /* PROJECT BADGES */
+  .p-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 8px; font-size: 10.5px; font-weight: 800;
+  }
+  .p-hotel { background: rgba(59,130,246,0.16); color: #60a5fa; border: 1px solid rgba(59,130,246,0.35); }
+  .p-pharmacy { background: rgba(16,185,129,0.16); color: #34d399; border: 1px solid rgba(16,185,129,0.35); }
+  .p-credit { background: rgba(245,158,11,0.16); color: #fbbf24; border: 1px solid rgba(245,158,11,0.35); }
+  .p-property { background: rgba(139,92,246,0.16); color: #a78bfa; border: 1px solid rgba(139,92,246,0.35); }
+  body.light-mode .p-hotel { color: #1d4ed8; }
+  body.light-mode .p-pharmacy { color: #047857; }
+  body.light-mode .p-credit { color: #b45309; }
+  body.light-mode .p-property { color: #6d28d9; }
+
+  .section { display: none; animation: fadeIn 0.2s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARDS & STATS */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15); margin-bottom: 16px;
+  }
+  body.light-mode .card { box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .card-title {
+    font-size: 15px; font-weight: 800; color: var(--text);
+    margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; margin-bottom: 16px; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 15px; padding: 16px 12px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--primary);
+  }
+  .stat-card.s-green::before { background: var(--success); }
+  .stat-card.s-orange::before { background: var(--warning); }
+  .stat-card.s-red::before { background: var(--danger); }
+  .stat-card.s-cyan::before { background: var(--info); }
+  .stat-card .value { font-size: 22px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+  .stat-card .label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  /* PROJECT SUMMARY CARDS ON DASHBOARD */
+  .proj-overview-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+  .proj-mini-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 13px; padding: 14px; cursor: pointer;
+    transition: all 0.18s; display: flex; justify-content: space-between; align-items: center;
+  }
+  .proj-mini-card:hover { border-color: var(--primary); background: var(--card-hover); }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; padding: 11px 14px; font-size: 13px; font-weight: 700;
+    border: none; border-radius: 10px; cursor: pointer; color: #fff;
+    text-decoration: none; margin-bottom: 6px; transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn-sm { padding: 7px 10px; font-size: 11.5px; border-radius: 8px; width: auto; margin-bottom: 0; }
+  .btn-success { background: #059669; }
+  .btn-primary { background: #2563eb; }
+  .btn-danger { background: #dc2626; }
+  .btn-warning { background: #d97706; }
+  .btn-info { background: #0284c7; }
+  .btn-purple { background: #7c3aed; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border-light); color: var(--text); }
+
+  /* FILTER BAR */
+  .filter-bar { display: grid; grid-template-columns: 1fr; gap: 9px; margin-bottom: 14px; }
+  .form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+  /* TENANT CARDS */
+  .cards-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .tenant-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 15px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: border-color 0.2s;
+  }
+  .tenant-card:hover { border-color: var(--border-light); }
+  .tenant-card.expired { border-color: rgba(245,158,11,0.55); }
+  .tenant-card.suspended { border-color: rgba(239,68,68,0.55); opacity: 0.88; }
+
+  .tenant-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 1px dashed var(--border); padding-bottom: 10px; margin-bottom: 10px; gap: 8px;
+  }
+  .tenant-title { font-size: 15px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tenant-sub { font-size: 11.5px; color: var(--muted); margin-top: 4px; word-break: break-all; }
+
+  .tenant-emails {
+    display: grid; gap: 4px; margin-bottom: 10px;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 9px 11px; border-radius: 10px;
+  }
+  .tenant-email-item { font-size: 11.5px; color: var(--muted); display: flex; gap: 6px; word-break: break-all; }
+  .tenant-email-item strong { color: var(--text); min-width: 74px; }
+
+  .tenant-info { font-size: 12px; margin-bottom: 8px; color: var(--muted); line-height: 1.55; }
+  .tenant-info strong { color: var(--text); }
+
+  .badge-status { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 800; white-space: nowrap; }
+  .status-active { background: rgba(16,185,129,0.18); color: #34d399; border: 1px solid rgba(16,185,129,0.35); }
+  .status-expired { background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid rgba(245,158,11,0.35); }
+  .status-suspended { background: rgba(239,68,68,0.18); color: #f87171; border: 1px solid rgba(239,68,68,0.35); }
+  body.light-mode .status-active { color: #047857; }
+  body.light-mode .status-expired { color: #b45309; }
+  body.light-mode .status-suspended { color: #b91c1c; }
+
+  .plan-pill { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 800; }
+  .plan-pro { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .plan-basic { background: rgba(148,163,184,0.2); color: var(--muted); }
+
+  .tenant-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+  /* REQUEST CARDS */
+  .req-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 13px; padding: 14px; margin-bottom: 10px;
+  }
+  .req-card.pending { border-color: rgba(245,158,11,0.5); }
+  .req-thumb {
+    max-width: 100%; max-height: 190px; border-radius: 9px;
+    border: 1px solid var(--border); margin-top: 9px; cursor: pointer; display: block;
+  }
+
+  .alert-banner {
+    display: none; background: rgba(239,68,68,0.15); color: #fca5a5;
+    padding: 13px; border-radius: 12px; border: 1px solid rgba(239,68,68,0.4);
+    margin-bottom: 14px; font-weight: 700; font-size: 13px; text-align: center;
+  }
+  body.light-mode .alert-banner { color: #b91c1c; }
+
+  .empty { text-align: center; padding: 32px 16px; color: var(--muted); grid-column: 1 / -1; }
+  .empty .emoji { font-size: 36px; margin-bottom: 8px; }
+
+  /* TOAST & MODAL */
+  #toastContainer { position: fixed; top: 16px; right: 16px; z-index: 4000; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    background: #1e293b; color: #f8fafc; border: 1px solid #334155;
+    padding: 12px 16px; border-radius: 11px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4); min-width: 230px; max-width: 340px;
+    animation: slideIn 0.2s ease;
+  }
+  .toast.success { background: #065f46; border-color: #10b981; }
+  .toast.error { background: #7f1d1d; border-color: #ef4444; }
+  .toast.info { background: #1e3a8a; border-color: #3b82f6; }
+  @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  #modalOverlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+    z-index: 3500; align-items: center; justify-content: center; padding: 20px;
+    backdrop-filter: blur(3px);
+  }
+  #modalOverlay.show { display: flex; }
+  .modal-box {
+    background: var(--card); border: 1px solid var(--border-light);
+    border-radius: 18px; padding: 22px; max-width: 440px; width: 100%;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5); max-height: 86vh; overflow-y: auto;
+  }
+  .modal-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
+  .modal-box p { font-size: 13.5px; color: var(--muted); margin-bottom: 16px; line-height: 1.55; white-space: pre-line; }
+  .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* MOBILE BOTTOM NAV */
+  #bottomNav {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg-elevated); border-top: 1px solid var(--border);
+    z-index: 140; box-shadow: 0 -4px 16px rgba(0,0,0,0.25);
+  }
+  .bn-inner { display: flex; justify-content: space-around; padding: 6px 0; }
+  .bn-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 6px 2px; cursor: pointer; color: var(--muted);
+    font-size: 10px; font-weight: 700; position: relative;
+  }
+  .bn-item .icon { font-size: 18px; }
+  .bn-item.active { color: #60a5fa; }
+  body.light-mode .bn-item.active { color: #2563eb; }
+  .bn-item .badge {
+    position: absolute; top: 2px; right: 20%; background: var(--danger);
+    color: #fff; padding: 0 5px; border-radius: 8px; font-size: 9px; font-weight: 800;
+  }
+
+  @media (min-width: 768px) {
+    #sidebar { transform: translateX(0); }
+    #main { margin-left: 264px; padding: 24px 30px 32px; }
+    .hamburger { display: none; }
+    #bottomNav { display: none !important; }
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    .proj-overview-grid { grid-template-columns: repeat(2, 1fr); }
+    .filter-bar { grid-template-columns: 2fr 1fr 1fr; }
+    .form-grid { grid-template-columns: repeat(2, 1fr); }
+    .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1220px) {
+    .proj-overview-grid { grid-template-columns: repeat(4, 1fr); }
+    .cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 767px) {
+    #bottomNav { display: block; }
+    .hamburger { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">👑</div>
+    <h1>HaniTech Master Admin</h1>
+    <div class="sub">Unified Control Center • All 4 Systems</div>
+    <div id="loginError"></div>
+    <div class="form-group">
+      <label>📧 Super Admin Email</label>
+      <input type="email" id="loginEmail" placeholder="admin@hanitech.com">
+    </div>
+    <div class="form-group">
+      <label>🔒 Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') adminLogin()">
+    </div>
+    <button class="btn-login" onclick="adminLogin()">🔓 ወደ Master Admin ግባ</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <aside id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-badge-logo">👑</div>
+      <div>
+        <h1>HaniTech Master</h1>
+        <small>4-in-1 Super Admin</small>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-item active" data-section="dashboard" onclick="switchSection('dashboard')">
+        <span class="icon">📊</span><span>Dashboard</span>
+      </div>
+      <div class="sb-item" data-section="accounts" onclick="switchSection('accounts')">
+        <span class="icon">🏢</span><span>Accounts & Subs</span>
+      </div>
+      <div class="sb-item" data-section="create" onclick="switchSection('create')">
+        <span class="icon">➕</span><span>Create Account</span>
+      </div>
+      <div class="sb-item" data-section="billing" onclick="switchSection('billing')">
+        <span class="icon">💳</span><span>Billing & Requests</span>
+        <span class="badge" id="sbBillBadge" style="display:none;">0</span>
+      </div>
+      <div class="sb-item" data-section="users" onclick="switchSection('users')">
+        <span class="icon">👥</span><span>All Users</span>
+      </div>
+      <div class="sb-item" data-section="passwords" onclick="switchSection('passwords')">
+        <span class="icon">🔑</span><span>Password Requests</span>
+        <span class="badge" id="sbPassBadge" style="display:none;">0</span>
+      </div>
+      <div class="sb-item" data-section="settings" onclick="switchSection('settings')">
+        <span class="icon">⚙️</span><span>Support & Pricing</span>
+      </div>
+      <div class="sb-item" data-section="data" onclick="switchSection('data')">
+        <span class="icon">💾</span><span>Export & Backup</span>
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <button class="btn-logout" onclick="adminLogout()">🚪 Logout</button>
+    </div>
+  </aside>
+  <div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
+
+  <main id="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <h2 id="pageTitle">📊 Master Dashboard</h2>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" onclick="reloadAllProjects()" title="Refresh">🔄</button>
+        <button class="icon-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        <div class="user-chip" id="userChip">admin@hanitech.com</div>
+      </div>
+    </div>
+
+    <!-- GLOBAL PROJECT FILTER TABS -->
+    <div class="project-switcher" id="projectSwitcher">
+      <div class="proj-pill active" data-proj="all" onclick="selectProjectFilter('all')">
+        <span>🌐 ሁሉም (All 4)</span><span class="count-tag" id="cnt-all">0</span>
+      </div>
+      <div class="proj-pill" data-proj="hotel" onclick="selectProjectFilter('hotel')">
+        <span>🏨 Hotel & Multi-Biz</span><span class="count-tag" id="cnt-hotel">0</span>
+      </div>
+      <div class="proj-pill" data-proj="pharmacy" onclick="selectProjectFilter('pharmacy')">
+        <span>💊 Pharmacy</span><span class="count-tag" id="cnt-pharmacy">0</span>
+      </div>
+      <div class="proj-pill" data-proj="credit" onclick="selectProjectFilter('credit')">
+        <span>💳 Credit App</span><span class="count-tag" id="cnt-credit">0</span>
+      </div>
+      <div class="proj-pill" data-proj="property" onclick="selectProjectFilter('property')">
+        <span>🏢 Property Mgmt</span><span class="count-tag" id="cnt-property">0</span>
+      </div>
+    </div>
+
+    <!-- 1. DASHBOARD -->
+    <section class="section active" id="section-dashboard">
+      <div class="alert-banner" id="paymentBanner">⚠️ <span id="paymentBannerText"></span></div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="value" id="statTotal">0</div><div class="label">🏢 ጠቅላላ ደንበኞች</div></div>
+        <div class="stat-card s-green"><div class="value" style="color:var(--success);" id="statActive">0</div><div class="label">✅ ንቁ (Active)</div></div>
+        <div class="stat-card s-orange"><div class="value" style="color:var(--warning);" id="statExpired">0</div><div class="label">⏳ ጊዜው ያለፈ</div></div>
+        <div class="stat-card s-red"><div class="value" style="color:var(--danger);" id="statSuspended">0</div><div class="label">⏸️ የታገዱ</div></div>
+      </div>
+
+      <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="stat-card s-cyan"><div class="value" style="color:var(--info);" id="statRevenue">0.00</div><div class="label">💰 የተሰበሰበ ገቢ (ETB)</div></div>
+        <div class="stat-card s-orange"><div class="value" style="color:var(--warning);" id="statPendingReqs">0</div><div class="label">📩 በመጠባበቅ ላይ ያሉ ጥያቄዎች</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🗂️ የፕሮጀክቶች አጠቃላይ እይታ (Projects Overview)</div>
+        <div class="proj-overview-grid" id="projOverviewGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🆕 የቅርብ ጊዜ ደንበኞች (Recent Accounts)</div>
+        <div id="recentAccountsList" class="cards-grid"></div>
+      </div>
+    </section>
+
+    <!-- 2. ACCOUNTS & SUBSCRIPTIONS -->
+    <section class="section" id="section-accounts">
+      <div class="card">
+        <div class="card-title">
+          <span>🏢 የተመዘገቡ ደንበኞች & Subscriptions</span>
+          <button class="btn btn-success btn-sm" onclick="switchSection('create')">➕ አዲስ ፍጠር</button>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="searchAccount" placeholder="🔍 በስም፣ Email፣ ስልክ ወይም ID ፈልግ..." oninput="renderAccounts()">
+          <select id="filterStatus" onchange="renderAccounts()">
+            <option value="all">ሁሉም ሁኔታ</option>
+            <option value="active">✅ ንቁ (Active)</option>
+            <option value="expiring">⏳ የሚያልቅ (≤7 ቀን)</option>
+            <option value="expired">🚨 ጊዜው ያለፈ (Expired)</option>
+            <option value="suspended">⏸️ የታገደ (Suspended)</option>
+          </select>
+          <select id="filterPlan" onchange="renderAccounts()">
+            <option value="all">ሁሉም ፕላኖች</option>
+            <option value="basic">🟢 Basic</option>
+            <option value="pro">🔵 Pro</option>
+          </select>
+        </div>
+        <div id="accountsList" class="cards-grid"></div>
+      </div>
+    </section>
+
+    <!-- 3. CREATE ACCOUNT -->
+    <section class="section" id="section-create">
+      <div class="card">
+        <div class="card-title">➕ አዲስ ደንበኛ / ድርጅት ፍጠር</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>🎯 ፕሮጀክት ምረጥ (Target System) *</label>
+            <select id="createProject" onchange="onCreateProjectChange()">
+              <option value="hotel">🏨 Hotel & Multi-Business (tenants)</option>
+              <option value="pharmacy">💊 Pharmacy Tracker (pharmacies)</option>
+              <option value="credit">💳 Credit App (shops)</option>
+              <option value="property">🏢 Property Management (properties)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>🏢 የድርጅት / ሱቅ / ህንፃ ስም *</label>
+            <input type="text" id="newName" placeholder="e.g. Addis Star Hotel">
+          </div>
+          <div class="form-group" id="grpBizType">
+            <label>🏷️ ዘርፍ (Business Type)</label>
+            <select id="newBizType">
+              <option value="hotel">🏨 Hotel</option>
+              <option value="restaurant">🍽️ Restaurant / Cafe</option>
+              <option value="supermarket">🛒 Supermarket</option>
+              <option value="retail">🏪 Retail Shop</option>
+              <option value="laundry">🧺 Laundry</option>
+              <option value="bakery">🍞 Bakery</option>
+              <option value="drinks">🍾 Drinks Distributor</option>
+              <option value="salon">✂️ Salon & Beauty</option>
+              <option value="electronics">🔌 Electronics</option>
+              <option value="hardware">🧱 Hardware</option>
+              <option value="furniture">🛋️ Furniture</option>
+              <option value="credit">💳 Credit Shop</option>
+            </select>
+          </div>
+          <div class="form-group" id="grpPhoneAddr">
+            <label id="lblPhoneAddr">📞 ስልክ ቁጥር / አድራሻ</label>
+            <input type="text" id="newPhoneAddr" placeholder="0911223344 or Bole, Addis Ababa">
+          </div>
+          <div class="form-group">
+            <label>📦 ፕላን (Plan)</label>
+            <select id="newPlan" onchange="syncCreatePricing()">
+              <option value="basic">🟢 Basic</option>
+              <option value="pro">🔵 Pro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>⏱️ የክፍያ ጊዜ (Billing Cycle)</label>
+            <select id="newCycle" onchange="syncCreatePricing()">
+              <option value="monthly">Monthly (30 days)</option>
+              <option value="quarterly">Quarterly (90 days)</option>
+              <option value="semiannual">Semi-Annual (180 days)</option>
+              <option value="annual">Annual (365 days)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>💰 የተከፈለ መጠን (ETB)</label>
+            <input type="number" id="newAmount" value="500">
+          </div>
+          <div class="form-group">
+            <label>📅 የማብቂያ ቀን (Expiry Date) *</label>
+            <input type="date" id="newExpiry">
+          </div>
+          <div class="form-group">
+            <label>💳 የክፍያ ዘዴ (Payment Method)</label>
+            <select id="newPayMethod">
+              <option value="Telebirr">📱 Telebirr</option>
+              <option value="CBE">🏦 CBE</option>
+              <option value="Bank Transfer">🏛️ Bank Transfer</option>
+              <option value="Cash">💵 Cash</option>
+            </select>
+          </div>
+          <div class="form-group" id="grpExtraOption">
+            <label>💳 Credit Tab (Hotel/Multi-Biz)</label>
+            <select id="newHasCredit">
+              <option value="false">❌ አይኑረው (Pro ብቻ)</option>
+              <option value="true">✅ ይኑረው</option>
+            </select>
+          </div>
+        </div>
+
+        <hr style="border:0; border-top:1px dashed var(--border); margin:12px 0 16px;">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>👑 Owner Email *</label>
+            <input type="email" id="newOwnerEmail" placeholder="owner@example.com">
+          </div>
+          <div class="form-group">
+            <label>🔑 ጊዜያዊ Password *</label>
+            <input type="text" id="newPassword" value="123456">
+          </div>
+          <div class="form-group" id="grpManager" style="display:none;">
+            <label>🎯 Manager Email (Optional)</label>
+            <input type="email" id="newManagerEmail" placeholder="manager@example.com">
+          </div>
+          <div class="form-group" id="grpAccountant" style="display:none;">
+            <label>🧰 Accountant Email (Optional)</label>
+            <input type="email" id="newAccountantEmail" placeholder="accountant@example.com">
+          </div>
+        </div>
+
+        <button class="btn btn-success" onclick="createUnifiedAccount()">✨ ደንበኛውን ፍጠርና ክፍያ መዝግብ</button>
+      </div>
+    </section>
+
+    <!-- 4. BILLING & REQUESTS -->
+    <section class="section" id="section-billing">
+      <div class="card">
+        <div class="card-title">💳 ክፍያ መዝግብና ጊዜ አራዝም (Record Payment & Renew)</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>🎯 ፕሮጀክት (System)</label>
+            <select id="payProjectSelect" onchange="populatePayAccountSelect()">
+              <option value="hotel">🏨 Hotel & Multi-Biz</option>
+              <option value="pharmacy">💊 Pharmacy Tracker</option>
+              <option value="credit">💳 Credit App</option>
+              <option value="property">🏢 Property Management</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>🏢 ደንበኛ (Account) *</label>
+            <select id="payAccountSelect" onchange="autoFillRenewFields()"></select>
+          </div>
+          <div class="form-group">
+            <label>⏱️ Billing Cycle</label>
+            <select id="payCycleSelect" onchange="autoFillRenewFields()">
+              <option value="monthly">Monthly (30 days)</option>
+              <option value="quarterly">Quarterly (90 days)</option>
+              <option value="semiannual">Semi-Annual (180 days)</option>
+              <option value="annual">Annual (365 days)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>💰 Amount (ETB) *</label>
+            <input type="number" id="payAmount" placeholder="500">
+          </div>
+          <div class="form-group">
+            <label>💳 Payment Method</label>
+            <select id="payMethod">
+              <option value="Telebirr">📱 Telebirr</option>
+              <option value="CBE">🏦 CBE</option>
+              <option value="Bank Transfer">🏛️ Bank Transfer</option>
+              <option value="Cash">💵 Cash</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>📅 አዲስ የማብቂያ ቀን (New Expiry) *</label>
+            <input type="date" id="payNewExpiry">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>📝 ማስታወሻ (Note / TXN ID)</label>
+          <input type="text" id="payNote" placeholder="e.g. Telebirr Ref #12345">
+        </div>
+        <button class="btn btn-success" onclick="submitUnifiedPayment()">💾 ክፍያ አስቀምጥና አድስ</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📩 የክፍያ ጥያቄዎች (Payment & Renewal Requests)</div>
+        <div id="billingRequestsList" class="cards-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🧾 የክፍያ ታሪክ (Payment History)</div>
+        <div id="billingHistoryList" class="cards-grid"></div>
+      </div>
+    </section>
+
+    <!-- 5. USERS -->
+    <section class="section" id="section-users">
+      <div class="card">
+        <div class="card-title">👥 የሁሉም ፕሮጀክቶች ተጠቃሚዎች (All Users)</div>
+        <div class="filter-bar" style="grid-template-columns:2fr 1fr;">
+          <input type="text" id="searchUser" placeholder="🔍 በኢሜይል ወይም በድርጅት ፈልግ..." oninput="renderUsers()">
+          <select id="filterUserRole" onchange="renderUsers()">
+            <option value="all">ሁሉም ሚና (All Roles)</option>
+            <option value="owner">👑 Owner</option>
+            <option value="manager">🎯 Manager</option>
+            <option value="accountant">🧰 Accountant</option>
+            <option value="employee">👷 Employee</option>
+          </select>
+        </div>
+        <div id="usersList" class="cards-grid"></div>
+      </div>
+    </section>
+
+    <!-- 6. PASSWORD REQUESTS -->
+    <section class="section" id="section-passwords">
+      <div class="card">
+        <div class="card-title">🔑 የፓስወርድ ሪሴት ጥያቄዎች (Password Reset Requests)</div>
+        <div id="passwordRequestsList" class="cards-grid"></div>
+      </div>
+    </section>
+
+    <!-- 7. SUPPORT & PRICING -->
+    <section class="section" id="section-settings">
+      <div class="card">
+        <div class="card-title">🛟 የድጋፍ መረጃ (Support Info — ለሁሉም 4 ፕሮጀክቶች በአንድ ጊዜ ይቀመጣል)</div>
+        <div class="form-grid" style="grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));">
+          <div class="form-group"><label>📞 ስልክ (Phone)</label><input type="text" id="supPhone" placeholder="+251 9..."></div>
+          <div class="form-group"><label>✈️ Telegram</label><input type="text" id="supTelegram" placeholder="@hanitech_support"></div>
+          <div class="form-group"><label>📧 Email</label><input type="email" id="supEmail" placeholder="support@hanitech.com"></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveGlobalSupport()">💾 Support Info በሁሉም ፕሮጀክቶች አስቀምጥ</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💰 የፕላን ዋጋዎች (Pricing Config — ETB)</div>
+        <div class="form-grid" style="grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));">
+          <div class="form-group"><label>🟢 Basic Monthly</label><input type="number" id="basicMonthly" value="500"></div>
+          <div class="form-group"><label>🟢 Basic Quarterly</label><input type="number" id="basicQuarterly" value="1400"></div>
+          <div class="form-group"><label>🟢 Basic Semi-Annual</label><input type="number" id="basicSemiannual" value="2700"></div>
+          <div class="form-group"><label>🟢 Basic Annual</label><input type="number" id="basicAnnual" value="5000"></div>
+          <div class="form-group"><label>🔵 Pro Monthly</label><input type="number" id="proMonthly" value="1000"></div>
+          <div class="form-group"><label>🔵 Pro Quarterly</label><input type="number" id="proQuarterly" value="2800"></div>
+          <div class="form-group"><label>🔵 Pro Semi-Annual</label><input type="number" id="proSemiannual" value="5400"></div>
+          <div class="form-group"><label>🔵 Pro Annual</label><input type="number" id="proAnnual" value="10000"></div>
+        </div>
+        <button class="btn btn-success" onclick="saveGlobalPricing()">💾 ዋጋዎችን በሁሉም ፕሮጀክቶች አስቀምጥ</button>
+      </div>
+    </section>
+
+    <!-- 8. EXPORT & BACKUP -->
+    <section class="section" id="section-data">
+      <div class="card">
+        <div class="card-title">💾 ዳታ ማውጣት እና ባክአፕ (Export & Backup)</div>
+        <div class="form-grid">
+          <button class="btn btn-success" onclick="exportAllCSV()">📊 የሁሉም ፕሮጀክቶች Excel (CSV) አውጣ</button>
+          <button class="btn btn-info" onclick="exportAllJSON()">📥 ሙሉ ባክአፕ (JSON) አውጣ</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav id="bottomNav">
+    <div class="bn-inner">
+      <div class="bn-item active" data-section="dashboard" onclick="switchSection('dashboard')"><span class="icon">📊</span><span>Dash</span></div>
+      <div class="bn-item" data-section="accounts" onclick="switchSection('accounts')"><span class="icon">🏢</span><span>Accounts</span></div>
+      <div class="bn-item" data-section="billing" onclick="switchSection('billing')"><span class="icon">💳</span><span>Billing</span><span class="badge" id="bnBillBadge" style="display:none;">0</span></div>
+      <div class="bn-item" data-section="users" onclick="switchSection('users')"><span class="icon">👥</span><span>Users</span></div>
+      <div class="bn-item" data-section="more" onclick="openMoreMenu()"><span class="icon">☰</span><span>More</span></div>
+    </div>
+  </nav>
+</div>
+
+<div id="toastContainer"></div>
+<div id="modalOverlay" onclick="if(event.target===this) closeModal()">
+  <div class="modal-box">
+    <h3 id="modalTitle">Title</h3>
+    <p id="modalMessage">Message</p>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  createUserWithEmailAndPassword, sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, getDocs, query, where,
+  doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const SUPER_ADMIN = "admin@hanitech.com";
+
+const PROJECTS = {
+  hotel: {
+    key: 'hotel',
+    label: 'Hotel & Multi-Biz',
+    shortLabel: 'Hotel/Biz',
+    icon: '🏨',
+    badgeClass: 'p-hotel',
+    mainCol: 'tenants',
+    idField: 'tenantId',
+    config: {
+      apiKey: "AIzaSyDcA1t2fOA98U9KsngvDEih6TmEZb1-v0E",
+      authDomain: "hotel-tracker-c3571.firebaseapp.com",
+      projectId: "hotel-tracker-c3571",
+      storageBucket: "hotel-tracker-c3571.firebasestorage.app",
+      messagingSenderId: "1024629386649",
+      appId: "1:1024629386649:web:c689f920c780e400797708"
+    }
+  },
+  pharmacy: {
+    key: 'pharmacy',
+    label: 'Pharmacy Tracker',
+    shortLabel: 'Pharmacy',
+    icon: '💊',
+    badgeClass: 'p-pharmacy',
+    mainCol: 'pharmacies',
+    idField: 'pharmacyId',
+    config: {
+      apiKey: "AIzaSyB3bQkI8scEHg36kkxlAalbbCtE4R0Vv8U",
+      authDomain: "hanitech-pharmacy-tracker.firebaseapp.com",
+      projectId: "hanitech-pharmacy-tracker",
+      storageBucket: "hanitech-pharmacy-tracker.firebasestorage.app",
+      messagingSenderId: "692991067588",
+      appId: "1:692991067588:web:5f0cab885c4aaa64785091"
+    }
+  },
+  credit: {
+    key: 'credit',
+    label: 'Credit App',
+    shortLabel: 'Credit',
+    icon: '💳',
+    badgeClass: 'p-credit',
+    mainCol: 'shops',
+    idField: 'shopId',
+    config: {
+      apiKey: "AIzaSyC3h__9_0HMC0ebr8sFV5_v1fqholtBVFg",
+      authDomain: "anitech-credit-app.firebaseapp.com",
+      projectId: "anitech-credit-app",
+      storageBucket: "anitech-credit-app.firebasestorage.app",
+      messagingSenderId: "860089315804",
+      appId: "1:860089315804:web:63955eea7b3c840990df19"
+    }
+  },
+  property: {
+    key: 'property',
+    label: 'Property Management',
+    shortLabel: 'Property',
+    icon: '🏢',
+    badgeClass: 'p-property',
+    mainCol: 'properties',
+    idField: 'propertyId',
+    config: {
+      apiKey: "AIzaSyBIrLhJyv2OY6QfTHPg_MRWMRX38qOFUPA",
+      authDomain: "hanitech--property-management.firebaseapp.com",
+      projectId: "hanitech--property-management",
+      storageBucket: "hanitech--property-management.firebasestorage.app",
+      messagingSenderId: "664487880210",
+      appId: "1:664487880210:web:d514dc295b6946556bdacb"
+    }
+  }
+};
+
+// Initialize all 4 Firebase apps
+const instances = {};
+Object.values(PROJECTS).forEach((p, idx) => {
+  const appInst = idx === 0 ? initializeApp(p.config) : initializeApp(p.config, 'app_' + p.key);
+  instances[p.key] = {
+    app: appInst,
+    auth: getAuth(appInst),
+    db: getFirestore(appInst)
+  };
+});
+
+const CYCLE_DAYS = { monthly: 30, quarterly: 90, semiannual: 180, annual: 365 };
+let pricingConfig = {
+  basic: { monthly: 500, quarterly: 1400, semiannual: 2700, annual: 5000 },
+  pro: { monthly: 1000, quarterly: 2800, semiannual: 5400, annual: 10000 }
+};
+
+let activeProjectFilter = 'all';
+let state = {
+  accounts: [],
+  users: [],
+  billingRequests: [],
+  payments: [],
+  passwordRequests: []
+};
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function money(n) {
+  return (Math.round((parseFloat(n) || 0) * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function addDaysStr(days, fromDate = new Date()) {
+  const d = new Date(fromDate);
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + (Number(days) || 30));
+  return d.toISOString().split('T')[0];
+}
+
+// ===== UI HELPERS =====
+window.toast = function(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250); }, 3200);
+};
+
+window.showModal = function(title, message, buttons, isHtml = false) {
+  return new Promise((resolve) => {
+    document.getElementById('modalTitle').textContent = title;
+    const msgEl = document.getElementById('modalMessage');
+    if (isHtml) msgEl.innerHTML = message;
+    else msgEl.textContent = message;
+    const actions = document.getElementById('modalActions');
+    actions.innerHTML = '';
+    buttons.forEach(btn => {
+      const b = document.createElement('button');
+      b.className = 'btn ' + (btn.class || 'btn-primary');
+      b.textContent = btn.text;
+      b.onclick = () => {
+        closeModal();
+        resolve(btn.value !== undefined ? btn.value : true);
+      };
+      actions.appendChild(b);
+    });
+    document.getElementById('modalOverlay').classList.add('show');
+  });
+};
+
+window.closeModal = function() {
+  document.getElementById('modalOverlay').classList.remove('show');
+};
+
+window.previewScreenshot = function(url) {
+  if (!url) return;
+  showModal('📷 የክፍያ Screenshot', `<img src="${esc(url)}" style="max-width:100%; border-radius:10px; display:block; margin:0 auto;">`, [{ text: 'ዝጋ', class: 'btn-primary' }], true);
+};
+
+window.toggleTheme = function() {
+  document.body.classList.toggle('light-mode');
+};
+
+window.toggleSidebar = function() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbOverlay').classList.toggle('show');
+};
+
+window.switchSection = function(name) {
+  if (name === 'more') return openMoreMenu();
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name)?.classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.section === name));
+  document.querySelectorAll('.bn-item').forEach(i => i.classList.toggle('active', i.dataset.section === name));
+  const titles = {
+    dashboard: '📊 Master Dashboard',
+    accounts: '🏢 Accounts & Subscriptions',
+    create: '➕ Create Account',
+    billing: '💳 Billing & Requests',
+    users: '👥 All Users',
+    passwords: '🔑 Password Requests',
+    settings: '⚙️ Support & Pricing',
+    data: '💾 Export & Backup'
+  };
+  document.getElementById('pageTitle').textContent = titles[name] || 'Master Admin';
+  if (window.innerWidth < 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
+};
+
+window.openMoreMenu = async function() {
+  const choice = await showModal('📋 ተጨማሪ ክፍሎች', 'የሚፈልጉትን ክፍል ይምረጡ', [
+    { text: '➕ Create Account', class: 'btn-success', value: 'create' },
+    { text: '🔑 Password Requests', class: 'btn-warning', value: 'passwords' },
+    { text: '⚙️ Support & Pricing', class: 'btn-info', value: 'settings' },
+    { text: '💾 Export & Backup', class: 'btn-purple', value: 'data' },
+    { text: '✖ ዝጋ', class: 'btn-outline', value: null }
+  ]);
+  if (choice) switchSection(choice);
+};
+
+window.selectProjectFilter = function(projKey) {
+  activeProjectFilter = projKey;
+  document.querySelectorAll('.proj-pill').forEach(el => {
+    el.classList.toggle('active', el.dataset.proj === projKey);
+  });
+  if (projKey !== 'all') {
+    const createSel = document.getElementById('createProject');
+    const paySel = document.getElementById('payProjectSelect');
+    if (createSel) { createSel.value = projKey; onCreateProjectChange(); }
+    if (paySel) { paySel.value = projKey; populatePayAccountSelect(); }
+  }
+  renderAllViews();
+};
+
+// ===== AUTHENTICATION (ALL 4 FIREBASE APPS) =====
+window.adminLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+
+  if (!email || !pass) { errEl.textContent = '⚠️ Email እና Password ያስፈልጋሉ'; errEl.style.display = 'block'; return; }
+  if (email.toLowerCase() !== SUPER_ADMIN) { errEl.textContent = '❌ እርስዎ Super Admin አይደሉም!'; errEl.style.display = 'block'; return; }
+
+  const results = await Promise.allSettled(
+    Object.values(instances).map(inst => signInWithEmailAndPassword(inst.auth, email, pass))
+  );
+
+  const anySuccess = results.some(r => r.status === 'fulfilled');
+  if (!anySuccess) {
+    errEl.textContent = '❌ Email ወይም Password ትክክል አይደለም';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const failedProjects = Object.keys(instances).filter((_, i) => results[i].status === 'rejected');
+  if (failedProjects.length > 0) {
+    toast(`⚠️ ማሳሰቢያ: ${failedProjects.map(k => PROJECTS[k].shortLabel).join(', ')} ፓስወርድ አልተመሳሰለም`, 'info');
+  }
+};
+
+window.adminLogout = async function() {
+  await Promise.allSettled(Object.values(instances).map(inst => signOut(inst.auth)));
+};
+
+onAuthStateChanged(instances.hotel.auth, async (user) => {
+  const anyUser = user || Object.values(instances).map(i => i.auth.currentUser).find(Boolean);
+  if (anyUser && anyUser.email?.toLowerCase() === SUPER_ADMIN) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('userChip').textContent = anyUser.email;
+    await reloadAllProjects();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+// ===== LOAD ALL 4 PROJECTS =====
+window.reloadAllProjects = async function() {
+  const newAccounts = [];
+  const newUsers = [];
+  const newBillingReqs = [];
+  const newPayments = [];
+  const newPassReqs = [];
+
+  await Promise.all(Object.values(PROJECTS).map(async (proj) => {
+    const db = instances[proj.key].db;
+
+    // 1. Main collection (tenants / pharmacies / shops / properties)
+    try {
+      const snap = await getDocs(collection(db, proj.mainCol));
+      snap.forEach(d => {
+        const raw = d.data();
+        const isSuspended = Boolean(raw.isSuspended || raw.status === 'suspended');
+        newAccounts.push({
+          id: d.id,
+          project: proj.key,
+          name: raw.name || raw.shopName || 'Unnamed',
+          plan: raw.plan || 'basic',
+          expiryDate: raw.expiryDate || '',
+          isSuspended,
+          amount: parseFloat(raw.amount ?? raw.lastPaymentAmount ?? 0) || 0,
+          ownerEmail: raw.ownerEmail || '',
+          managerEmail: raw.managerEmail || '',
+          accountantEmail: raw.accountantEmail || '',
+          phone: raw.phone || '',
+          address: raw.address || '',
+          website: raw.website || '',
+          businessType: raw.businessType || raw.bizType || '',
+          paymentHistory: Array.isArray(raw.paymentHistory) ? raw.paymentHistory : [],
+          createdAt: raw.createdAt?.toDate ? raw.createdAt.toDate().toISOString() : (raw.createdAt || ''),
+          raw
+        });
+
+        // Embedded paymentHistory (Pharmacy & Property)
+        if (Array.isArray(raw.paymentHistory)) {
+          raw.paymentHistory.forEach((ph, idx) => {
+            newPayments.push({
+              id: `${d.id}_hist_${idx}`,
+              project: proj.key,
+              accountId: d.id,
+              accountName: raw.name || raw.shopName || d.id,
+              amount: parseFloat(ph.amount) || 0,
+              method: ph.method || 'Cash',
+              cycle: ph.cycle || (ph.months ? `${ph.months}m` : 'monthly'),
+              date: ph.date || '',
+              newExpiryDate: raw.expiryDate || '',
+              note: ph.note || ''
+            });
+          });
+        }
+      });
+    } catch (e) { console.warn(proj.key, proj.mainCol, e.message); }
+
+    // 2. Users
+    try {
+      const uSnap = await getDocs(collection(db, 'users'));
+      uSnap.forEach(d => {
+        const u = d.data();
+        const entityId = u[proj.idField] || u.tenantId || u.pharmacyId || u.shopId || u.propertyId || '';
+        newUsers.push({
+          id: d.id,
+          project: proj.key,
+          email: u.email || '',
+          role: u.role || 'employee',
+          entityId,
+          createdAt: u.createdAt || ''
+        });
+      });
+    } catch (e) { console.warn(proj.key, 'users', e.message); }
+
+    // 3. Billing Payments collection (Hotel & Credit)
+    if (proj.key === 'hotel' || proj.key === 'credit') {
+      try {
+        const pSnap = await getDocs(collection(db, 'billingPayments'));
+        pSnap.forEach(d => {
+          const p = d.data();
+          newPayments.push({
+            id: d.id,
+            project: proj.key,
+            accountId: p.tenantId || '',
+            accountName: p.tenantName || p.tenantId || '—',
+            amount: parseFloat(p.amount) || 0,
+            method: p.method || 'Cash',
+            cycle: p.cycle || 'monthly',
+            date: p.createdAt?.toDate ? p.createdAt.toDate().toISOString().split('T')[0] : '',
+            newExpiryDate: p.newExpiryDate || '',
+            note: p.note || ''
+          });
+        });
+      } catch (e) { console.warn(proj.key, 'billingPayments', e.message); }
+    }
+
+    // 4. Billing / Subscription Requests
+    try {
+      const colsToCheck = proj.key === 'property' ? ['subscription_requests', 'billingRequests'] : ['billingRequests'];
+      const seen = new Set();
+      for (const colName of colsToCheck) {
+        const rSnap = await getDocs(collection(db, colName)).catch(() => ({ forEach: () => {} }));
+        rSnap.forEach(d => {
+          if (seen.has(d.id)) return;
+          seen.add(d.id);
+          const r = d.data();
+          newBillingReqs.push({
+            id: d.id,
+            _col: colName,
+            project: proj.key,
+            status: r.status || 'pending',
+            targetId: r.tenantId || r.propertyId || r.shopId || '',
+            targetName: r.tenantName || r.propertyName || r.shopName || r.ownerEmail || r.requesterEmail || '—',
+            senderEmail: r.ownerEmail || r.requesterEmail || r.email || '',
+            amount: parseFloat(r.amount) || 0,
+            method: r.method || r.paymentMethod || '—',
+            cycle: r.cycle || r.duration || 'monthly',
+            days: r.days || null,
+            requestedExpiryDate: r.requestedExpiryDate || '',
+            plan: r.plan || '',
+            note: r.note || '',
+            screenshotUrl: r.screenshotUrl || r.screenshot || r.receiptUrl || r.image || ''
+          });
+        });
+      }
+    } catch (e) { console.warn(proj.key, 'requests', e.message); }
+
+    // 5. Password Reset Requests
+    try {
+      const pwSnap = await getDocs(collection(db, 'passwordRequests'));
+      pwSnap.forEach(d => {
+        const pw = d.data();
+        if (pw.status && pw.status !== 'pending') return;
+        newPassReqs.push({
+          id: d.id,
+          project: proj.key,
+          email: pw.email || '',
+          date: pw.requestedAt?.toDate ? pw.requestedAt.toDate().toLocaleString() : (pw.date || '—')
+        });
+      });
+    } catch (e) { console.warn(proj.key, 'passwordRequests', e.message); }
+  }));
+
+  // Load Global Support & Pricing from primary (hotel)
+  try {
+    const [supSnap, priceSnap] = await Promise.all([
+      getDoc(doc(instances.hotel.db, 'appSettings', 'support')),
+      getDoc(doc(instances.hotel.db, 'appSettings', 'pricing'))
+    ]);
+    if (supSnap.exists()) {
+      const s = supSnap.data();
+      document.getElementById('supPhone').value = s.phone || '';
+      document.getElementById('supTelegram').value = s.telegram || '';
+      document.getElementById('supEmail').value = s.email || '';
+    }
+    if (priceSnap.exists()) {
+      const pr = priceSnap.data();
+      pricingConfig = {
+        basic: { ...pricingConfig.basic, ...(pr.basic || {}) },
+        pro: { ...pricingConfig.pro, ...(pr.pro || {}) }
+      };
+      document.getElementById('basicMonthly').value = pricingConfig.basic.monthly;
+      document.getElementById('basicQuarterly').value = pricingConfig.basic.quarterly;
+      document.getElementById('basicSemiannual').value = pricingConfig.basic.semiannual;
+      document.getElementById('basicAnnual').value = pricingConfig.basic.annual;
+      document.getElementById('proMonthly').value = pricingConfig.pro.monthly;
+      document.getElementById('proQuarterly').value = pricingConfig.pro.quarterly;
+      document.getElementById('proSemiannual').value = pricingConfig.pro.semiannual;
+      document.getElementById('proAnnual').value = pricingConfig.pro.annual;
+    }
+  } catch (e) { console.warn('Settings load', e); }
+
+  state = {
+    accounts: newAccounts,
+    users: newUsers,
+    billingRequests: newBillingReqs,
+    payments: newPayments,
+    passwordRequests: newPassReqs
+  };
+
+  updateProjectCounts();
+  populatePayAccountSelect();
+  syncCreatePricing();
+  renderAllViews();
+};
+
+function updateProjectCounts() {
+  document.getElementById('cnt-all').textContent = state.accounts.length;
+  Object.keys(PROJECTS).forEach(k => {
+    const el = document.getElementById('cnt-' + k);
+    if (el) el.textContent = state.accounts.filter(a => a.project === k).length;
+  });
+}
+
+function filterByProject(arr) {
+  if (activeProjectFilter === 'all') return arr;
+  return arr.filter(x => x.project === activeProjectFilter);
+}
+
+function getSubStatus(acc) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (acc.isSuspended) return { key: 'suspended', label: '⏸️ SUSPENDED', cls: 'status-suspended' };
+  if (!acc.expiryDate) return { key: 'active', label: '✅ ACTIVE', cls: 'status-active' };
+  const exp = new Date(acc.expiryDate); exp.setHours(0,0,0,0);
+  const days = Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
+  if (days < 0) return { key: 'expired', label: `🚨 EXPIRED (${Math.abs(days)}d)`, cls: 'status-expired' };
+  if (days <= 7) return { key: 'expiring', label: `⏳ EXPIRING (${days}d)`, cls: 'status-expired' };
+  return { key: 'active', label: `✅ ACTIVE (${days}d)`, cls: 'status-active' };
+}
+
+function projBadgeHtml(projKey) {
+  const p = PROJECTS[projKey];
+  return `<span class="p-badge ${p.badgeClass}">${p.icon} ${esc(p.shortLabel)}</span>`;
+}
+
+function renderAllViews() {
+  renderDashboard();
+  renderAccounts();
+  renderBilling();
+  renderUsers();
+  renderPasswordRequests();
+}
+
+// ===== 1. DASHBOARD RENDER =====
+function renderDashboard() {
+  const accs = filterByProject(state.accounts);
+  const pays = filterByProject(state.payments);
+  const reqs = filterByProject(state.billingRequests).filter(r => r.status === 'pending');
+
+  let active = 0, expired = 0, suspended = 0;
+  const expiredNames = [];
+  accs.forEach(a => {
+    const s = getSubStatus(a);
+    if (s.key === 'suspended') suspended++;
+    else if (s.key === 'expired') { expired++; expiredNames.push(`${a.name} (${PROJECTS[a.project].shortLabel})`); }
+    else active++;
+  });
+
+  const totalRev = pays.reduce((sum, p) => sum + (p.amount || 0), 0);
+
+  document.getElementById('statTotal').textContent = accs.length;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statExpired').textContent = expired;
+  document.getElementById('statSuspended').textContent = suspended;
+  document.getElementById('statRevenue').textContent = money(totalRev);
+  document.getElementById('statPendingReqs').textContent = reqs.length;
+
+  const banner = document.getElementById('paymentBanner');
+  if (expiredNames.length > 0) {
+    banner.style.display = 'block';
+    document.getElementById('paymentBannerText').textContent = `${expiredNames.length} ደንበኞች የክፍያ ጊዜያቸው አልፎባቸዋል: ${expiredNames.slice(0, 5).join(', ')}${expiredNames.length > 5 ? '...' : ''}`;
+  } else {
+    banner.style.display = 'none';
+  }
+
+  // Project overview cards
+  const ovGrid = document.getElementById('projOverviewGrid');
+  ovGrid.innerHTML = Object.values(PROJECTS).map(p => {
+    const pAccs = state.accounts.filter(a => a.project === p.key);
+    const pActive = pAccs.filter(a => !a.isSuspended && (!a.expiryDate || new Date(a.expiryDate) >= new Date())).length;
+    const pPending = state.billingRequests.filter(r => r.project === p.key && r.status === 'pending').length;
+    return `
+      <div class="proj-mini-card" onclick="selectProjectFilter('${p.key}'); switchSection('accounts');">
+        <div>
+          <div style="font-weight:800; font-size:14px; margin-bottom:4px;">${p.icon} ${esc(p.label)}</div>
+          <div style="font-size:11.5px; color:var(--muted);">✅ ${pActive} ንቁ • 📩 ${pPending} ጥያቄ</div>
+        </div>
+        <div style="font-size:22px; font-weight:900; color:var(--primary);">${pAccs.length}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Recent accounts
+  const recent = [...accs].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 6);
+  const recEl = document.getElementById('recentAccountsList');
+  if (!recent.length) {
+    recEl.innerHTML = `<div class="empty"><div class="emoji">📭</div><p>ምንም ደንበኛ የለም</p></div>`;
+    return;
+  }
+  recEl.innerHTML = recent.map(a => {
+    const st = getSubStatus(a);
+    return `
+      <div class="tenant-card">
+        <div>
+          <div class="tenant-header">
+            <div class="tenant-title">${esc(a.name)} ${projBadgeHtml(a.project)}</div>
+            <span class="badge-status ${st.cls}">${st.label}</span>
+          </div>
+          <div class="tenant-info">
+            👑 ${esc(a.ownerEmail || '—')} <br>
+            📅 Exp: <strong>${esc(a.expiryDate || '—')}</strong> • 📦 <strong>${esc((a.plan || 'basic').toUpperCase())}</strong>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===== 2. ACCOUNTS RENDER & ACTIONS =====
+window.renderAccounts = function() {
+  const listEl = document.getElementById('accountsList');
+  const search = (document.getElementById('searchAccount')?.value || '').toLowerCase();
+  const fStatus = document.getElementById('filterStatus')?.value || 'all';
+  const fPlan = document.getElementById('filterPlan')?.value || 'all';
+
+  const filtered = filterByProject(state.accounts).filter(a => {
+    const st = getSubStatus(a);
+    const hay = `${a.name} ${a.ownerEmail} ${a.managerEmail} ${a.phone} ${a.address} ${a.id}`.toLowerCase();
+    if (search && !hay.includes(search)) return false;
+    if (fStatus !== 'all' && st.key !== fStatus) return false;
+    if (fPlan !== 'all' && (a.plan || 'basic') !== fPlan) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    listEl.innerHTML = `<div class="empty"><div class="emoji">🔍</div><p>ምንም ደንበኛ አልተገኘም</p></div>`;
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(a => {
+    const st = getSubStatus(a);
+    const planCls = a.plan === 'pro' ? 'plan-pro' : 'plan-basic';
+    const subDetail = a.phone || a.address || a.website || a.businessType || '—';
+    return `
+      <div class="tenant-card ${st.key === 'expired' ? 'expired' : (st.key === 'suspended' ? 'suspended' : '')}">
+        <div>
+          <div class="tenant-header">
+            <div>
+              <div class="tenant-title">
+                ${esc(a.name)}
+                ${projBadgeHtml(a.project)}
+                <span class="plan-pill ${planCls}">${esc((a.plan || 'basic').toUpperCase())}</span>
+              </div>
+              <div class="tenant-sub">📍 ${esc(subDetail)} • 🆔 ${esc(a.id)}</div>
+            </div>
+            <span class="badge-status ${st.cls}">${st.label}</span>
+          </div>
+
+          <div class="tenant-emails">
+            <div class="tenant-email-item">👑 <strong>Owner:</strong> ${esc(a.ownerEmail || '—')}</div>
+            ${a.managerEmail ? `<div class="tenant-email-item">🎯 <strong>Manager:</strong> ${esc(a.managerEmail)}</div>` : ''}
+            ${a.accountantEmail ? `<div class="tenant-email-item">🧰 <strong>Accountant:</strong> ${esc(a.accountantEmail)}</div>` : ''}
+          </div>
+
+          <div class="tenant-info">
+            📅 ማብቂያ: <strong>${esc(a.expiryDate || '—')}</strong> • 💰 ክፍያ: <strong>${money(a.amount)} ETB</strong>
+          </div>
+        </div>
+
+        <div class="tenant-actions">
+          <button class="btn btn-success btn-sm" onclick="quickRenewAccount('${a.project}', '${esc(a.id)}')">💳 Renew</button>
+          <button class="btn btn-primary btn-sm" onclick="editUnifiedAccount('${a.project}', '${esc(a.id)}')">✏️ Edit</button>
+          <button class="btn btn-info btn-sm" onclick="changeUnifiedPlan('${a.project}', '${esc(a.id)}', '${esc(a.plan)}')">🔄 Plan</button>
+          <button class="btn btn-purple btn-sm" onclick="sendUnifiedBanner('${a.project}', '${esc(a.id)}')">📢 Banner</button>
+          <button class="btn ${a.isSuspended ? 'btn-success' : 'btn-warning'} btn-sm" onclick="toggleUnifiedSuspend('${a.project}', '${esc(a.id)}', ${a.isSuspended})">
+            ${a.isSuspended ? '▶️ Activate' : '⏸️ Suspend'}
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUnifiedAccount('${a.project}', '${esc(a.id)}', '${esc(a.name)}')">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+};
+
+window.quickRenewAccount = function(projKey, accId) {
+  switchSection('billing');
+  document.getElementById('payProjectSelect').value = projKey;
+  populatePayAccountSelect();
+  document.getElementById('payAccountSelect').value = accId;
+  autoFillRenewFields();
+};
+
+window.editUnifiedAccount = async function(projKey, accId) {
+  const acc = state.accounts.find(x => x.project === projKey && x.id === accId);
+  if (!acc) return;
+  const newName = prompt('የድርጅት ስም:', acc.name);
+  if (newName === null || !newName.trim()) return;
+  const newExpiry = prompt('የማብቂያ ቀን (YYYY-MM-DD):', acc.expiryDate || '');
+  if (newExpiry === null) return;
+  const newAmt = prompt('ክፍያ (ETB):', String(acc.amount || 0));
+  if (newAmt === null) return;
+
+  try {
+    const payload = {
+      name: newName.trim(),
+      expiryDate: newExpiry.trim(),
+      amount: parseFloat(newAmt) || 0
+    };
+    if (projKey === 'credit') payload.shopName = newName.trim();
+    await updateDoc(doc(instances[projKey].db, PROJECTS[projKey].mainCol, accId), payload);
+    toast('✅ መረጃው ተሻሽሏል', 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.changeUnifiedPlan = async function(projKey, accId, currentPlan) {
+  const nextPlan = currentPlan === 'pro' ? 'basic' : 'pro';
+  const ok = await showModal('🔄 ፕላን ቀይር', `ፕላኑን ከ ${(currentPlan || 'basic').toUpperCase()} ወደ ${nextPlan.toUpperCase()} መቀየር ይፈልጋሉ?`, [
+    { text: 'አዎ ቀይር', class: 'btn-primary', value: true },
+    { text: 'ተወው', class: 'btn-outline', value: false }
+  ]);
+  if (!ok) return;
+  try {
+    await updateDoc(doc(instances[projKey].db, PROJECTS[projKey].mainCol, accId), { plan: nextPlan });
+    toast(`✅ ፕላኑ ወደ ${nextPlan.toUpperCase()} ተቀይሯል`, 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.sendUnifiedBanner = async function(projKey, accId) {
+  const acc = state.accounts.find(x => x.project === projKey && x.id === accId);
+  const msg = prompt('ለደንበኛው የሚላክ መልእክት (ባዶ ከተዉት ይጠፋል):', acc?.raw?.subscriptionMessage || '');
+  if (msg === null) return;
+  const status = prompt('ሁኔታ (warning / expired / success):', acc?.raw?.subscriptionStatus || 'warning') || 'warning';
+  try {
+    await updateDoc(doc(instances[projKey].db, PROJECTS[projKey].mainCol, accId), {
+      subscriptionMessage: msg.trim(),
+      subscriptionStatus: status.trim()
+    });
+    toast('✅ ማሳወቂያ ተልኳል', 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.toggleUnifiedSuspend = async function(projKey, accId, isSusp) {
+  const ok = await showModal('⚠️ ማረጋገጫ', isSusp ? 'ይህን ደንበኛ ማንቃት ይፈልጋሉ?' : 'ይህን ደንበኛ ማገድ ይፈልጋሉ?', [
+    { text: 'አዎ', class: isSusp ? 'btn-success' : 'btn-danger', value: true },
+    { text: 'ተወው', class: 'btn-outline', value: false }
+  ]);
+  if (!ok) return;
+  try {
+    const nextSusp = !isSusp;
+    const payload = { isSuspended: nextSusp };
+    if (projKey === 'credit') payload.status = nextSusp ? 'suspended' : 'active';
+    await updateDoc(doc(instances[projKey].db, PROJECTS[projKey].mainCol, accId), payload);
+    toast(nextSusp ? '⏸️ ታግዷል' : '✅ ንቁ ሆኗል', 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.deleteUnifiedAccount = async function(projKey, accId, name) {
+  const ok = await showModal('🚨 አደጋ!', `"${name}" (${PROJECTS[projKey].label}) ን በእርግጥ ማጥፋት ይፈልጋሉ? ይህ አይመለስም!`, [
+    { text: 'አዎ አጥፋ', class: 'btn-danger', value: true },
+    { text: 'ተወው', class: 'btn-outline', value: false }
+  ]);
+  if (!ok) return;
+  try {
+    const db = instances[projKey].db;
+    const proj = PROJECTS[projKey];
+    const uSnap = await getDocs(query(collection(db, 'users'), where(proj.idField, '==', accId)));
+    for (const u of uSnap.docs) await deleteDoc(doc(db, 'users', u.id));
+    await deleteDoc(doc(db, proj.mainCol, accId));
+    toast('✅ ተጠፍቷል', 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+// ===== 3. CREATE UNIFIED ACCOUNT =====
+window.onCreateProjectChange = function() {
+  const projKey = document.getElementById('createProject').value;
+  document.getElementById('grpBizType').style.display = (projKey === 'hotel' || projKey === 'credit') ? 'block' : 'none';
+  document.getElementById('grpExtraOption').style.display = projKey === 'hotel' ? 'block' : 'none';
+  document.getElementById('grpManager').style.display = (projKey === 'pharmacy' || projKey === 'property') ? 'block' : 'none';
+  document.getElementById('grpAccountant').style.display = (projKey === 'pharmacy' || projKey === 'property') ? 'block' : 'none';
+
+  const lbl = document.getElementById('lblPhoneAddr');
+  if (projKey === 'credit') lbl.textContent = '📞 ስልክ ቁጥር (Phone) *';
+  else if (projKey === 'property') lbl.textContent = '📍 አድራሻ (Address)';
+  else if (projKey === 'pharmacy') lbl.textContent = '🌐 ድረ-ገጽ / አድራሻ';
+  else lbl.textContent = '📝 ተጨማሪ ማስታወሻ';
+};
+
+window.syncCreatePricing = function() {
+  const plan = document.getElementById('newPlan').value;
+  const cycle = document.getElementById('newCycle').value;
+  const price = pricingConfig[plan]?.[cycle] ?? 500;
+  document.getElementById('newAmount').value = price;
+  document.getElementById('newExpiry').value = addDaysStr(CYCLE_DAYS[cycle] || 30);
+};
+
+window.createUnifiedAccount = async function() {
+  const projKey = document.getElementById('createProject').value;
+  const proj = PROJECTS[projKey];
+  const db = instances[projKey].db;
+
+  const name = document.getElementById('newName').value.trim();
+  const bizType = document.getElementById('newBizType').value;
+  const phoneAddr = document.getElementById('newPhoneAddr').value.trim();
+  const plan = document.getElementById('newPlan').value;
+  const cycle = document.getElementById('newCycle').value;
+  const amount = parseFloat(document.getElementById('newAmount').value) || 0;
+  const expiry = document.getElementById('newExpiry').value;
+  const payMethod = document.getElementById('newPayMethod').value;
+  const hasCredit = document.getElementById('newHasCredit').value === 'true';
+  const ownerEmail = document.getElementById('newOwnerEmail').value.trim();
+  const password = document.getElementById('newPassword').value;
+  const managerEmail = document.getElementById('newManagerEmail')?.value.trim() || '';
+  const accountantEmail = document.getElementById('newAccountantEmail')?.value.trim() || '';
+
+  if (!name || !expiry || !ownerEmail || password.length < 6) {
+    toast('⚠️ ስም፣ Owner Email፣ ማብቂያ ቀን እና ቢያንስ 6 ፊደል Password ያስፈልጋሉ', 'error');
+    return;
+  }
+
+  toast('⏳ በመፍጠር ላይ...', 'info');
+  try {
+    const secApp = initializeApp(proj.config, 'Create-' + Date.now());
+    const secAuth = getAuth(secApp);
+    const cred = await createUserWithEmailAndPassword(secAuth, ownerEmail, password);
+    const ownerUid = cred.user.uid;
+    await signOut(secAuth);
+    await deleteApp(secApp);
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const payEntry = amount > 0 ? [{ date: todayStr, amount, cycle, months: Math.max(1, Math.round((CYCLE_DAYS[cycle] || 30)/30)), method: payMethod, note: 'Initial subscription' }] : [];
+
+    let entityId = '';
+    if (projKey === 'hotel') {
+      entityId = name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 15) + '_' + Date.now().toString(36);
+      await setDoc(doc(db, 'tenants', entityId), {
+        name, businessType: bizType, plan, billingCycle: cycle, expiryDate: expiry,
+        hasCredit, maxEmployees: 2, lastPaymentAmount: amount, lastPaymentMethod: payMethod,
+        isSuspended: false, createdAt: serverTimestamp(), currency: 'ETB', language: 'am'
+      });
+      await setDoc(doc(db, 'users', ownerUid), { email: ownerEmail, role: 'owner', tenantId: entityId, isTempPassword: true, createdAt: serverTimestamp() });
+      await setDoc(doc(db, 'branches', entityId + '_Main'), { name: 'Main', tenantId: entityId });
+      if (amount > 0) {
+        await addDoc(collection(db, 'billingPayments'), { tenantId: entityId, tenantName: name, plan, cycle, amount, method: payMethod, newExpiryDate: expiry, note: 'Initial subscription', type: 'initial', createdAt: serverTimestamp() });
+      }
+    } else if (projKey === 'credit') {
+      entityId = ownerUid;
+      await setDoc(doc(db, 'shops', entityId), {
+        shopId: entityId, name, shopName: name, phone: phoneAddr, ownerEmail,
+        businessType: bizType || 'credit', plan, billingCycle: cycle, expiryDate: expiry,
+        lastPaymentAmount: amount, lastPaymentMethod: payMethod, paymentHistory: payEntry,
+        status: 'active', isSuspended: false, createdAt: serverTimestamp()
+      });
+      await setDoc(doc(db, 'users', ownerUid), { email: ownerEmail, phone: phoneAddr, role: 'owner', shopId: entityId, shopName: name, isTempPassword: true, createdAt: serverTimestamp() });
+      if (amount > 0) {
+        await addDoc(collection(db, 'billingPayments'), { tenantId: entityId, tenantName: name, plan, cycle, amount, method: payMethod, newExpiryDate: expiry, note: 'Initial subscription', type: 'initial', createdAt: serverTimestamp() });
+      }
+    } else if (projKey === 'pharmacy') {
+      const ref = await addDoc(collection(db, 'pharmacies'), {
+        name, website: phoneAddr, plan, ownerEmail, managerEmail, accountantEmail,
+        amount, expiryDate: expiry, isSuspended: false, paymentHistory: payEntry, createdAt: todayStr
+      });
+      entityId = ref.id;
+      await setDoc(doc(db, 'users', ownerUid), { email: ownerEmail, role: 'owner', pharmacyId: entityId, isTempPassword: true, createdAt: todayStr });
+    } else if (projKey === 'property') {
+      const ref = await addDoc(collection(db, 'properties'), {
+        name, address: phoneAddr, plan, billingCycle: cycle, billingDays: CYCLE_DAYS[cycle] || 30,
+        ownerEmail, managerEmail, accountantEmail, amount, expiryDate: expiry,
+        isSuspended: false, paymentHistory: payEntry, createdAt: todayStr
+      });
+      entityId = ref.id;
+      await setDoc(doc(db, 'users', ownerUid), { email: ownerEmail, role: 'owner', propertyId: entityId, isTempPassword: true, createdAt: todayStr });
+    }
+
+    toast(`✅ "${name}" በ ${proj.label} ውስጥ ተፈጥሯል!`, 'success');
+    document.getElementById('newName').value = '';
+    document.getElementById('newOwnerEmail').value = '';
+    document.getElementById('newPhoneAddr').value = '';
+    await reloadAllProjects();
+    switchSection('accounts');
+  } catch (e) {
+    toast('❌ ስህተት: ' + e.message, 'error');
+  }
+};
+
+// ===== 4. BILLING & REQUESTS =====
+window.populatePayAccountSelect = function() {
+  const projKey = document.getElementById('payProjectSelect').value;
+  const sel = document.getElementById('payAccountSelect');
+  const list = state.accounts.filter(a => a.project === projKey);
+  sel.innerHTML = list.length
+    ? list.map(a => `<option value="${esc(a.id)}">${esc(a.name)} (${esc((a.plan || 'basic').toUpperCase())} | Exp: ${esc(a.expiryDate || '—')})</option>`).join('')
+    : `<option value="">ምንም ደንበኛ የለም</option>`;
+  autoFillRenewFields();
+};
+
+window.autoFillRenewFields = function() {
+  const projKey = document.getElementById('payProjectSelect').value;
+  const accId = document.getElementById('payAccountSelect').value;
+  const cycle = document.getElementById('payCycleSelect').value;
+  const acc = state.accounts.find(a => a.project === projKey && a.id === accId);
+  const plan = acc?.plan || 'basic';
+  document.getElementById('payAmount').value = pricingConfig[plan]?.[cycle] ?? 500;
+  const base = (acc?.expiryDate && new Date(acc.expiryDate) > new Date()) ? new Date(acc.expiryDate) : new Date();
+  document.getElementById('payNewExpiry').value = addDaysStr(CYCLE_DAYS[cycle] || 30, base);
+};
+
+window.submitUnifiedPayment = async function() {
+  const projKey = document.getElementById('payProjectSelect').value;
+  const accId = document.getElementById('payAccountSelect').value;
+  const cycle = document.getElementById('payCycleSelect').value;
+  const amount = parseFloat(document.getElementById('payAmount').value) || 0;
+  const method = document.getElementById('payMethod').value;
+  const newExpiry = document.getElementById('payNewExpiry').value;
+  const note = document.getElementById('payNote').value.trim() || `${cycle} renewal`;
+
+  if (!accId || !newExpiry) { toast('⚠️ ደንበኛ እና አዲስ የማብቂያ ቀን ይምረጡ', 'error'); return; }
+
+  try {
+    const db = instances[projKey].db;
+    const proj = PROJECTS[projKey];
+    const acc = state.accounts.find(a => a.project === projKey && a.id === accId);
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const history = [...(acc?.paymentHistory || [])];
+    history.push({ date: todayStr, amount, cycle, months: Math.max(1, Math.round((CYCLE_DAYS[cycle] || 30)/30)), method, note });
+
+    const updatePayload = {
+      expiryDate: newExpiry,
+      isSuspended: false,
+      lastPaymentAmount: amount,
+      lastPaymentMethod: method,
+      paymentHistory: history
+    };
+    if (projKey === 'credit') updatePayload.status = 'active';
+    await updateDoc(doc(db, proj.mainCol, accId), updatePayload);
+
+    if (projKey === 'hotel' || projKey === 'credit') {
+      await addDoc(collection(db, 'billingPayments'), {
+        tenantId: accId, tenantName: acc?.name || accId, plan: acc?.plan || 'basic',
+        cycle, amount, method, newExpiryDate: newExpiry, note, type: 'renewal', createdAt: serverTimestamp()
+      });
+    }
+
+    toast(`✅ ክፍያ ተመዝግቧል! አዲስ ማብቂያ: ${newExpiry}`, 'success');
+    document.getElementById('payNote').value = '';
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+function renderBilling() {
+  const reqs = filterByProject(state.billingRequests);
+  const pendingCount = reqs.filter(r => r.status === 'pending').length;
+  ['sbBillBadge', 'bnBillBadge'].forEach(id => {
+    const b = document.getElementById(id);
+    if (!b) return;
+    b.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+    b.textContent = pendingCount;
+  });
+
+  const reqList = document.getElementById('billingRequestsList');
+  const sortedReqs = [...reqs].sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1));
+  if (!sortedReqs.length) {
+    reqList.innerHTML = `<div class="empty"><div class="emoji">✅</div><p>ምንም የክፍያ ጥያቄ የለም</p></div>`;
+  } else {
+    reqList.innerHTML = sortedReqs.map(r => {
+      const isPend = r.status === 'pending';
+      return `
+        <div class="req-card ${isPend ? 'pending' : ''}">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:6px;">
+            <strong style="font-size:14px;">🏢 ${esc(r.targetName)} ${projBadgeHtml(r.project)}</strong>
+            <span class="badge-status ${r.status === 'approved' ? 'status-active' : (r.status === 'rejected' ? 'status-suspended' : 'status-expired')}">${esc(r.status.toUpperCase())}</span>
+          </div>
+          <div style="font-size:12px; color:var(--muted); line-height:1.55;">
+            💰 <strong>${money(r.amount)} ETB</strong> • 💳 ${esc(r.method)} • ⏱️ ${esc(r.cycle)} <br>
+            ${r.senderEmail ? `📧 ${esc(r.senderEmail)} <br>` : ''}
+            ${r.note ? `📝 ${esc(r.note)}` : ''}
+          </div>
+          ${r.screenshotUrl ? `<img src="${esc(r.screenshotUrl)}" class="req-thumb" onclick="previewScreenshot('${esc(r.screenshotUrl)}')">` : ''}
+          ${isPend ? `
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button class="btn btn-success btn-sm" onclick="approveUnifiedRequest('${r.project}', '${esc(r.id)}')">✅ Approve & Renew</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectUnifiedRequest('${r.project}', '${esc(r.id)}')">❌ Reject</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  const pays = filterByProject(state.payments).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const histList = document.getElementById('billingHistoryList');
+  if (!pays.length) {
+    histList.innerHTML = `<div class="empty"><div class="emoji">🧾</div><p>ምንም የክፍያ ታሪክ የለም</p></div>`;
+  } else {
+    histList.innerHTML = pays.slice(0, 30).map(p => `
+      <div class="tenant-card">
+        <div>
+          <div class="tenant-header">
+            <div class="tenant-title">💰 ${money(p.amount)} ETB ${projBadgeHtml(p.project)}</div>
+            <span class="badge-status status-active">${esc(p.method)}</span>
+          </div>
+          <div class="tenant-info">
+            🏢 <strong>${esc(p.accountName)}</strong> (${esc(p.cycle)}) <br>
+            📅 ${esc(p.date || '—')} ${p.newExpiryDate ? `• Exp: <strong>${esc(p.newExpiryDate)}</strong>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+window.approveUnifiedRequest = async function(projKey, reqId) {
+  const req = state.billingRequests.find(r => r.project === projKey && r.id === reqId);
+  if (!req) return;
+  try {
+    const db = instances[projKey].db;
+    const proj = PROJECTS[projKey];
+    const addDays = parseInt(req.days, 10) || CYCLE_DAYS[req.cycle] || 30;
+    const acc = state.accounts.find(a =>
+      a.project === projKey && (a.id === req.targetId || (req.senderEmail && a.ownerEmail.toLowerCase() === req.senderEmail.toLowerCase()))
+    );
+
+    let newExpiry = req.requestedExpiryDate || '';
+    if (acc) {
+      const base = (acc.expiryDate && new Date(acc.expiryDate) > new Date()) ? new Date(acc.expiryDate) : new Date();
+      newExpiry = newExpiry || addDaysStr(addDays, base);
+      const history = [...(acc.paymentHistory || [])];
+      history.push({ date: new Date().toISOString().split('T')[0], amount: req.amount, cycle: req.cycle, method: req.method, note: req.note || 'Approved request' });
+
+      const payload = {
+        expiryDate: newExpiry,
+        isSuspended: false,
+        lastPaymentAmount: req.amount,
+        lastPaymentMethod: req.method,
+        paymentHistory: history
+      };
+      if (projKey === 'credit') payload.status = 'active';
+      if (req.plan === 'pro' || req.plan === 'basic') payload.plan = req.plan;
+      await updateDoc(doc(db, proj.mainCol, acc.id), payload);
+
+      if (projKey === 'hotel' || projKey === 'credit') {
+        await addDoc(collection(db, 'billingPayments'), {
+          tenantId: acc.id, tenantName: acc.name, plan: acc.plan, cycle: req.cycle,
+          amount: req.amount, method: req.method, newExpiryDate: newExpiry,
+          note: req.note || 'Approved request', type: 'request_approved', createdAt: serverTimestamp()
+        });
+      }
+    }
+
+    await updateDoc(doc(db, req._col, reqId), { status: 'approved', approvedAt: serverTimestamp() });
+    toast(`✅ ክፍያ ጸድቋል! ${newExpiry ? 'አዲስ ማብቂያ: ' + newExpiry : ''}`, 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.rejectUnifiedRequest = async function(projKey, reqId) {
+  const req = state.billingRequests.find(r => r.project === projKey && r.id === reqId);
+  if (!req || !confirm('የክፍያ ጥያቄውን ውድቅ ማድረግ ይፈልጋሉ?')) return;
+  try {
+    await updateDoc(doc(instances[projKey].db, req._col, reqId), { status: 'rejected', rejectedAt: serverTimestamp() });
+    toast('ጥያቄው ውድቅ ተደርጓል', 'info');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+// ===== 5. USERS =====
+window.renderUsers = function() {
+  const listEl = document.getElementById('usersList');
+  const search = (document.getElementById('searchUser')?.value || '').toLowerCase();
+  const fRole = document.getElementById('filterUserRole')?.value || 'all';
+
+  const filtered = filterByProject(state.users).filter(u => {
+    const acc = state.accounts.find(a => a.project === u.project && a.id === u.entityId);
+    const hay = `${u.email} ${acc?.name || ''} ${u.entityId}`.toLowerCase();
+    if (search && !hay.includes(search)) return false;
+    if (fRole !== 'all' && u.role !== fRole) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    listEl.innerHTML = `<div class="empty"><div class="emoji">👤</div><p>ምንም ተጠቃሚ አልተገኘም</p></div>`;
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(u => {
+    const acc = state.accounts.find(a => a.project === u.project && a.id === u.entityId);
+    const rIcon = u.role === 'owner' ? '👑' : u.role === 'manager' ? '🎯' : u.role === 'accountant' ? '🧰' : '👷';
+    return `
+      <div class="tenant-card">
+        <div>
+          <div class="tenant-header">
+            <div class="tenant-title">${rIcon} ${esc(u.email)}</div>
+            ${projBadgeHtml(u.project)}
+          </div>
+          <div class="tenant-info">
+            🏢 <strong>${esc(acc?.name || u.entityId || '—')}</strong> • 🎭 Role: <strong>${esc(u.role)}</strong>
+          </div>
+        </div>
+        <div class="tenant-actions">
+          <button class="btn btn-info btn-sm" onclick="sendUnifiedReset('${u.project}', '${esc(u.email)}')">📧 Reset Pass</button>
+          <button class="btn btn-warning btn-sm" onclick="changeUnifiedRole('${u.project}', '${esc(u.id)}', '${esc(u.role)}')">🔄 Role</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUnifiedUser('${u.project}', '${esc(u.id)}')">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+};
+
+window.sendUnifiedReset = async function(projKey, email) {
+  try {
+    await sendPasswordResetEmail(instances[projKey].auth, email);
+    toast(`📧 የሪሴት ሊንክ ወደ ${email} ተልኳል`, 'success');
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.changeUnifiedRole = async function(projKey, userId, curRole) {
+  const next = prompt('አዲስ ሚና (owner / manager / accountant / employee):', curRole);
+  if (!next || !['owner', 'manager', 'accountant', 'employee'].includes(next.trim())) return;
+  try {
+    await updateDoc(doc(instances[projKey].db, 'users', userId), { role: next.trim() });
+    toast('✅ ሚና ተቀይሯል', 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.deleteUnifiedUser = async function(projKey, userId) {
+  if (!confirm('ተጠቃሚውን ከዳታቤዝ ማጥፋት ይፈልጋሉ?')) return;
+  try {
+    await deleteDoc(doc(instances[projKey].db, 'users', userId));
+    toast('✅ ተጠቃሚው ተጠፍቷል', 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+// ===== 6. PASSWORD REQUESTS =====
+function renderPasswordRequests() {
+  const reqs = filterByProject(state.passwordRequests);
+  const badge = document.getElementById('sbPassBadge');
+  if (badge) {
+    badge.style.display = reqs.length > 0 ? 'inline-block' : 'none';
+    badge.textContent = reqs.length;
+  }
+  const el = document.getElementById('passwordRequestsList');
+  if (!reqs.length) {
+    el.innerHTML = `<div class="empty"><div class="emoji">✅</div><p>ምንም የፓስወርድ ጥያቄ የለም</p></div>`;
+    return;
+  }
+  el.innerHTML = reqs.map(r => `
+    <div class="tenant-card">
+      <div>
+        <div class="tenant-header">
+          <div class="tenant-title">📧 ${esc(r.email)}</div>
+          ${projBadgeHtml(r.project)}
+        </div>
+        <div class="tenant-info">📅 ${esc(r.date)}</div>
+      </div>
+      <div class="tenant-actions">
+        <button class="btn btn-success btn-sm" onclick="approveUnifiedPassReq('${r.project}', '${esc(r.id)}', '${esc(r.email)}')">✅ Send Reset & Approve</button>
+        <button class="btn btn-danger btn-sm" onclick="rejectUnifiedPassReq('${r.project}', '${esc(r.id)}')">❌ Reject</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.approveUnifiedPassReq = async function(projKey, reqId, email) {
+  try {
+    await sendPasswordResetEmail(instances[projKey].auth, email);
+    await updateDoc(doc(instances[projKey].db, 'passwordRequests', reqId), { status: 'approved', approvedAt: serverTimestamp() });
+    toast(`✅ የሪሴት ኢሜይል ወደ ${email} ተልኳል`, 'success');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.rejectUnifiedPassReq = async function(projKey, reqId) {
+  try {
+    await updateDoc(doc(instances[projKey].db, 'passwordRequests', reqId), { status: 'rejected', rejectedAt: serverTimestamp() });
+    toast('ውድቅ ተደርጓል', 'info');
+    await reloadAllProjects();
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+// ===== 7. GLOBAL SUPPORT & PRICING (SYNC TO ALL 4) =====
+window.saveGlobalSupport = async function() {
+  const phone = document.getElementById('supPhone').value.trim();
+  let telegram = document.getElementById('supTelegram').value.trim();
+  if (telegram && !telegram.startsWith('@')) telegram = '@' + telegram;
+  const email = document.getElementById('supEmail').value.trim();
+
+  try {
+    await Promise.all(Object.values(PROJECTS).map(async (p) => {
+      const db = instances[p.key].db;
+      const colName = (p.key === 'pharmacy' || p.key === 'property') ? 'settings' : 'appSettings';
+      await setDoc(doc(db, colName, 'support'), { phone, telegram, email, updatedAt: serverTimestamp() }, { merge: true });
+    }));
+    toast('✅ Support Info በአራቱም ፕሮጀክቶች ላይ ተቀምጧል!', 'success');
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+window.saveGlobalPricing = async function() {
+  pricingConfig = {
+    basic: {
+      monthly: parseFloat(document.getElementById('basicMonthly').value) || 500,
+      quarterly: parseFloat(document.getElementById('basicQuarterly').value) || 1400,
+      semiannual: parseFloat(document.getElementById('basicSemiannual').value) || 2700,
+      annual: parseFloat(document.getElementById('basicAnnual').value) || 5000
+    },
+    pro: {
+      monthly: parseFloat(document.getElementById('proMonthly').value) || 1000,
+      quarterly: parseFloat(document.getElementById('proQuarterly').value) || 2800,
+      semiannual: parseFloat(document.getElementById('proSemiannual').value) || 5400,
+      annual: parseFloat(document.getElementById('proAnnual').value) || 10000
+    }
+  };
+
+  try {
+    await Promise.all(Object.values(PROJECTS).map(async (p) => {
+      await setDoc(doc(instances[p.key].db, 'appSettings', 'pricing'), { ...pricingConfig, updatedAt: serverTimestamp() }, { merge: true });
+    }));
+    syncCreatePricing();
+    autoFillRenewFields();
+    toast('✅ የ Basic እና Pro ዋጋዎች በአራቱም ፕሮጀክቶች ተቀምጠዋል!', 'success');
+  } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
+};
+
+// ===== 8. EXPORT & BACKUP =====
+window.exportAllCSV = function() {
+  const rows = filterByProject(state.accounts);
+  if (!rows.length) { toast('ዳታ የለም', 'error'); return; }
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  let csv = '﻿ፕሮጀክት,ስም,ፕላን,Owner Email,ስልክ/አድራሻ,ክፍያ (ETB),ማብቂያ ቀን,ሁኔታ
+';
+  rows.forEach(a => {
+    csv += [
+      q(PROJECTS[a.project].label),
+      q(a.name),
+      q((a.plan || 'basic').toUpperCase()),
+      q(a.ownerEmail),
+      q(a.phone || a.address || ''),
+      q(a.amount || 0),
+      q(a.expiryDate || ''),
+      q(a.isSuspended ? 'Suspended' : 'Active')
+    ].join(',') + '
+';
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `hanitech-master-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('✅ CSV ወርዷል', 'success');
+};
+
+window.exportAllJSON = function() {
+  const payload = { exportedAt: new Date().toISOString(), pricing: pricingConfig, ...state };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `hanitech-master-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('✅ ሙሉ ባክአፕ ወርዷል', 'success');
+};
+
+onCreateProjectChange();
+syncCreatePricing();
+</script>
+</body>
+</html>
