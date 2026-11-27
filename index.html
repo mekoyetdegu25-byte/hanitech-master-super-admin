@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" href="data:,">
 <title>HaniTech Master Super Admin</title>
 <style>
   :root {
@@ -50,7 +51,6 @@
   }
   label { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
 
-  /* LOGIN */
   #loginScreen {
     position: fixed; inset: 0;
     background: radial-gradient(circle at top right, #1e293b 0%, #070b14 65%);
@@ -88,10 +88,8 @@
     margin-bottom: 14px; font-size: 13px; font-weight: 600; display: none;
   }
 
-  /* APP SHELL */
   #app { display: none; min-height: 100vh; }
 
-  /* SIDEBAR */
   #sidebar {
     position: fixed; top: 0; left: 0; bottom: 0; width: 264px;
     background: var(--bg-elevated); border-right: 1px solid var(--border);
@@ -144,10 +142,8 @@
   .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(2px); }
   .sb-overlay.show { display: block; }
 
-  /* MAIN AREA */
   #main { padding: 16px; padding-bottom: 92px; transition: margin-left 0.28s ease; }
 
-  /* TOPBAR & PROJECT SWITCHER */
   .topbar {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 14px; gap: 10px; flex-wrap: wrap;
@@ -171,7 +167,6 @@
     font-size: 11.5px; font-weight: 700; color: var(--accent);
   }
 
-  /* PROJECT SWITCHER BAR */
   .project-switcher {
     display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 16px;
     scrollbar-width: none;
@@ -196,7 +191,6 @@
   }
   .proj-pill.active .count-tag { background: rgba(255,255,255,0.25); color: #fff; }
 
-  /* PROJECT BADGES */
   .p-badge {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 3px 9px; border-radius: 8px; font-size: 10.5px; font-weight: 800;
@@ -214,7 +208,6 @@
   .section.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* CARDS & STATS */
   .card {
     background: var(--card); border: 1px solid var(--border);
     border-radius: 16px; padding: 18px;
@@ -243,7 +236,6 @@
   .stat-card .value { font-size: 22px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
   .stat-card .label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
 
-  /* PROJECT SUMMARY CARDS ON DASHBOARD */
   .proj-overview-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
   .proj-mini-card {
     background: var(--bg); border: 1px solid var(--border);
@@ -252,7 +244,6 @@
   }
   .proj-mini-card:hover { border-color: var(--primary); background: var(--card-hover); }
 
-  /* BUTTONS */
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     width: 100%; padding: 11px 14px; font-size: 13px; font-weight: 700;
@@ -269,11 +260,9 @@
   .btn-purple { background: #7c3aed; }
   .btn-outline { background: transparent; border: 1.5px solid var(--border-light); color: var(--text); }
 
-  /* FILTER BAR */
   .filter-bar { display: grid; grid-template-columns: 1fr; gap: 9px; margin-bottom: 14px; }
   .form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
 
-  /* TENANT CARDS */
   .cards-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
   .tenant-card {
     background: var(--bg); border: 1px solid var(--border);
@@ -317,7 +306,6 @@
 
   .tenant-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 
-  /* REQUEST CARDS */
   .req-card {
     background: var(--bg); border: 1px solid var(--border);
     border-radius: 13px; padding: 14px; margin-bottom: 10px;
@@ -338,7 +326,6 @@
   .empty { text-align: center; padding: 32px 16px; color: var(--muted); grid-column: 1 / -1; }
   .empty .emoji { font-size: 36px; margin-bottom: 8px; }
 
-  /* TOAST & MODAL */
   #toastContainer { position: fixed; top: 16px; right: 16px; z-index: 4000; display: flex; flex-direction: column; gap: 8px; }
   .toast {
     background: #1e293b; color: #f8fafc; border: 1px solid #334155;
@@ -366,7 +353,6 @@
   .modal-box p { font-size: 13.5px; color: var(--muted); margin-bottom: 16px; line-height: 1.55; white-space: pre-line; }
   .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-  /* MOBILE BOTTOM NAV */
   #bottomNav {
     display: none; position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--bg-elevated); border-top: 1px solid var(--border);
@@ -409,7 +395,6 @@
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-logo">👑</div>
@@ -424,11 +409,10 @@
       <label>🔒 Password</label>
       <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') adminLogin()">
     </div>
-    <button class="btn-login" onclick="adminLogin()">🔓 ወደ Master Admin ግባ</button>
+    <button class="btn-login" id="loginBtn" onclick="adminLogin()">🔓 ወደ Master Admin ግባ</button>
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="app">
   <aside id="sidebar">
     <div class="sb-brand">
@@ -485,7 +469,6 @@
       </div>
     </div>
 
-    <!-- GLOBAL PROJECT FILTER TABS -->
     <div class="project-switcher" id="projectSwitcher">
       <div class="proj-pill active" data-proj="all" onclick="selectProjectFilter('all')">
         <span>🌐 ሁሉም (All 4)</span><span class="count-tag" id="cnt-all">0</span>
@@ -504,7 +487,6 @@
       </div>
     </div>
 
-    <!-- 1. DASHBOARD -->
     <section class="section active" id="section-dashboard">
       <div class="alert-banner" id="paymentBanner">⚠️ <span id="paymentBannerText"></span></div>
 
@@ -531,7 +513,6 @@
       </div>
     </section>
 
-    <!-- 2. ACCOUNTS & SUBSCRIPTIONS -->
     <section class="section" id="section-accounts">
       <div class="card">
         <div class="card-title">
@@ -557,7 +538,6 @@
       </div>
     </section>
 
-    <!-- 3. CREATE ACCOUNT -->
     <section class="section" id="section-create">
       <div class="card">
         <div class="card-title">➕ አዲስ ደንበኛ / ድርጅት ፍጠር</div>
@@ -663,7 +643,6 @@
       </div>
     </section>
 
-    <!-- 4. BILLING & REQUESTS -->
     <section class="section" id="section-billing">
       <div class="card">
         <div class="card-title">💳 ክፍያ መዝግብና ጊዜ አራዝም (Record Payment & Renew)</div>
@@ -726,7 +705,6 @@
       </div>
     </section>
 
-    <!-- 5. USERS -->
     <section class="section" id="section-users">
       <div class="card">
         <div class="card-title">👥 የሁሉም ፕሮጀክቶች ተጠቃሚዎች (All Users)</div>
@@ -744,7 +722,6 @@
       </div>
     </section>
 
-    <!-- 6. PASSWORD REQUESTS -->
     <section class="section" id="section-passwords">
       <div class="card">
         <div class="card-title">🔑 የፓስወርድ ሪሴት ጥያቄዎች (Password Reset Requests)</div>
@@ -752,7 +729,6 @@
       </div>
     </section>
 
-    <!-- 7. SUPPORT & PRICING -->
     <section class="section" id="section-settings">
       <div class="card">
         <div class="card-title">🛟 የድጋፍ መረጃ (Support Info — ለሁሉም 4 ፕሮጀክቶች በአንድ ጊዜ ይቀመጣል)</div>
@@ -780,7 +756,6 @@
       </div>
     </section>
 
-    <!-- 8. EXPORT & BACKUP -->
     <section class="section" id="section-data">
       <div class="card">
         <div class="card-title">💾 ዳታ ማውጣት እና ባክአፕ (Export & Backup)</div>
@@ -792,7 +767,6 @@
     </section>
   </main>
 
-  <!-- MOBILE BOTTOM NAV -->
   <nav id="bottomNav">
     <div class="bn-inner">
       <div class="bn-item active" data-section="dashboard" onclick="switchSection('dashboard')"><span class="icon">📊</span><span>Dash</span></div>
@@ -897,7 +871,6 @@ const PROJECTS = {
   }
 };
 
-// Initialize all 4 Firebase apps
 const instances = {};
 Object.values(PROJECTS).forEach((p, idx) => {
   const appInst = idx === 0 ? initializeApp(p.config) : initializeApp(p.config, 'app_' + p.key);
@@ -936,7 +909,6 @@ function addDaysStr(days, fromDate = new Date()) {
   return d.toISOString().split('T')[0];
 }
 
-// ===== UI HELPERS =====
 window.toast = function(msg, type = 'info') {
   const el = document.createElement('div');
   el.className = 'toast ' + type;
@@ -1030,51 +1002,82 @@ window.selectProjectFilter = function(projKey) {
   renderAllViews();
 };
 
-// ===== AUTHENTICATION (ALL 4 FIREBASE APPS) =====
 window.adminLogin = async function() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
   errEl.style.display = 'none';
 
-  if (!email || !pass) { errEl.textContent = '⚠️ Email እና Password ያስፈልጋሉ'; errEl.style.display = 'block'; return; }
-  if (email.toLowerCase() !== SUPER_ADMIN) { errEl.textContent = '❌ እርስዎ Super Admin አይደሉም!'; errEl.style.display = 'block'; return; }
-
-  const results = await Promise.allSettled(
-    Object.values(instances).map(inst => signInWithEmailAndPassword(inst.auth, email, pass))
-  );
-
-  const anySuccess = results.some(r => r.status === 'fulfilled');
-  if (!anySuccess) {
-    errEl.textContent = '❌ Email ወይም Password ትክክል አይደለም';
+  if (!email || !pass) {
+    errEl.textContent = '⚠️ Email እና Password ያስፈልጋሉ';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (email.toLowerCase() !== SUPER_ADMIN) {
+    errEl.textContent = '❌ እርስዎ Super Admin አይደሉም!';
     errEl.style.display = 'block';
     return;
   }
 
-  const failedProjects = Object.keys(instances).filter((_, i) => results[i].status === 'rejected');
-  if (failedProjects.length > 0) {
-    toast(`⚠️ ማሳሰቢያ: ${failedProjects.map(k => PROJECTS[k].shortLabel).join(', ')} ፓስወርድ አልተመሳሰለም`, 'info');
+  btn.disabled = true;
+  btn.textContent = '⏳ በመግባት ላይ...';
+
+  const entries = Object.entries(instances);
+  const results = await Promise.allSettled(
+    entries.map(([, inst]) => signInWithEmailAndPassword(inst.auth, email, pass))
+  );
+
+  btn.disabled = false;
+  btn.textContent = '🔓 ወደ Master Admin ግባ';
+
+  const succeeded = entries.filter((_, i) => results[i].status === 'fulfilled').map(([k]) => k);
+  const failed = entries
+    .map(([k], i) => results[i].status === 'rejected' ? `${PROJECTS[k].shortLabel}: ${results[i].reason?.code || results[i].reason?.message}` : null)
+    .filter(Boolean);
+
+  if (succeeded.length === 0) {
+    errEl.textContent = `❌ መግባት አልተቻለም (${failed[0] || 'Unknown error'})`;
+    errEl.style.display = 'block';
+    return;
   }
+
+  if (failed.length > 0) {
+    toast(`⚠️ በከፊል ገብቷል (${succeeded.join(', ')})። ያልገቡ: ${failed.join(' | ')}`, 'info');
+  }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('userChip').textContent = email;
+  await reloadAllProjects();
 };
 
 window.adminLogout = async function() {
   await Promise.allSettled(Object.values(instances).map(inst => signOut(inst.auth)));
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
 };
 
-onAuthStateChanged(instances.hotel.auth, async (user) => {
-  const anyUser = user || Object.values(instances).map(i => i.auth.currentUser).find(Boolean);
-  if (anyUser && anyUser.email?.toLowerCase() === SUPER_ADMIN) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('userChip').textContent = anyUser.email;
-    await reloadAllProjects();
-  } else {
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-  }
+Object.values(instances).forEach((inst) => {
+  onAuthStateChanged(inst.auth, async (user) => {
+    const activeAdmin = Object.values(instances)
+      .map(x => x.auth.currentUser)
+      .find(u => u && u.email && u.email.toLowerCase() === SUPER_ADMIN);
+
+    if (activeAdmin) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('userChip').textContent = activeAdmin.email;
+    } else if (!user) {
+      const anySignedIn = Object.values(instances).some(x => x.auth.currentUser);
+      if (!anySignedIn) {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+      }
+    }
+  });
 });
 
-// ===== LOAD ALL 4 PROJECTS =====
 window.reloadAllProjects = async function() {
   const newAccounts = [];
   const newUsers = [];
@@ -1085,7 +1088,6 @@ window.reloadAllProjects = async function() {
   await Promise.all(Object.values(PROJECTS).map(async (proj) => {
     const db = instances[proj.key].db;
 
-    // 1. Main collection (tenants / pharmacies / shops / properties)
     try {
       const snap = await getDocs(collection(db, proj.mainCol));
       snap.forEach(d => {
@@ -1111,7 +1113,6 @@ window.reloadAllProjects = async function() {
           raw
         });
 
-        // Embedded paymentHistory (Pharmacy & Property)
         if (Array.isArray(raw.paymentHistory)) {
           raw.paymentHistory.forEach((ph, idx) => {
             newPayments.push({
@@ -1131,7 +1132,6 @@ window.reloadAllProjects = async function() {
       });
     } catch (e) { console.warn(proj.key, proj.mainCol, e.message); }
 
-    // 2. Users
     try {
       const uSnap = await getDocs(collection(db, 'users'));
       uSnap.forEach(d => {
@@ -1148,7 +1148,6 @@ window.reloadAllProjects = async function() {
       });
     } catch (e) { console.warn(proj.key, 'users', e.message); }
 
-    // 3. Billing Payments collection (Hotel & Credit)
     if (proj.key === 'hotel' || proj.key === 'credit') {
       try {
         const pSnap = await getDocs(collection(db, 'billingPayments'));
@@ -1170,7 +1169,6 @@ window.reloadAllProjects = async function() {
       } catch (e) { console.warn(proj.key, 'billingPayments', e.message); }
     }
 
-    // 4. Billing / Subscription Requests
     try {
       const colsToCheck = proj.key === 'property' ? ['subscription_requests', 'billingRequests'] : ['billingRequests'];
       const seen = new Set();
@@ -1201,7 +1199,6 @@ window.reloadAllProjects = async function() {
       }
     } catch (e) { console.warn(proj.key, 'requests', e.message); }
 
-    // 5. Password Reset Requests
     try {
       const pwSnap = await getDocs(collection(db, 'passwordRequests'));
       pwSnap.forEach(d => {
@@ -1217,7 +1214,6 @@ window.reloadAllProjects = async function() {
     } catch (e) { console.warn(proj.key, 'passwordRequests', e.message); }
   }));
 
-  // Load Global Support & Pricing from primary (hotel)
   try {
     const [supSnap, priceSnap] = await Promise.all([
       getDoc(doc(instances.hotel.db, 'appSettings', 'support')),
@@ -1297,7 +1293,6 @@ function renderAllViews() {
   renderPasswordRequests();
 }
 
-// ===== 1. DASHBOARD RENDER =====
 function renderDashboard() {
   const accs = filterByProject(state.accounts);
   const pays = filterByProject(state.payments);
@@ -1329,7 +1324,6 @@ function renderDashboard() {
     banner.style.display = 'none';
   }
 
-  // Project overview cards
   const ovGrid = document.getElementById('projOverviewGrid');
   ovGrid.innerHTML = Object.values(PROJECTS).map(p => {
     const pAccs = state.accounts.filter(a => a.project === p.key);
@@ -1346,7 +1340,6 @@ function renderDashboard() {
     `;
   }).join('');
 
-  // Recent accounts
   const recent = [...accs].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 6);
   const recEl = document.getElementById('recentAccountsList');
   if (!recent.length) {
@@ -1372,7 +1365,6 @@ function renderDashboard() {
   }).join('');
 }
 
-// ===== 2. ACCOUNTS RENDER & ACTIONS =====
 window.renderAccounts = function() {
   const listEl = document.getElementById('accountsList');
   const search = (document.getElementById('searchAccount')?.value || '').toLowerCase();
@@ -1531,7 +1523,6 @@ window.deleteUnifiedAccount = async function(projKey, accId, name) {
   } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
 };
 
-// ===== 3. CREATE UNIFIED ACCOUNT =====
 window.onCreateProjectChange = function() {
   const projKey = document.getElementById('createProject').value;
   document.getElementById('grpBizType').style.display = (projKey === 'hotel' || projKey === 'credit') ? 'block' : 'none';
@@ -1643,7 +1634,6 @@ window.createUnifiedAccount = async function() {
   }
 };
 
-// ===== 4. BILLING & REQUESTS =====
 window.populatePayAccountSelect = function() {
   const projKey = document.getElementById('payProjectSelect').value;
   const sel = document.getElementById('payAccountSelect');
@@ -1824,7 +1814,6 @@ window.rejectUnifiedRequest = async function(projKey, reqId) {
   } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
 };
 
-// ===== 5. USERS =====
 window.renderUsers = function() {
   const listEl = document.getElementById('usersList');
   const search = (document.getElementById('searchUser')?.value || '').toLowerCase();
@@ -1893,7 +1882,6 @@ window.deleteUnifiedUser = async function(projKey, userId) {
   } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
 };
 
-// ===== 6. PASSWORD REQUESTS =====
 function renderPasswordRequests() {
   const reqs = filterByProject(state.passwordRequests);
   const badge = document.getElementById('sbPassBadge');
@@ -1940,7 +1928,6 @@ window.rejectUnifiedPassReq = async function(projKey, reqId) {
   } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
 };
 
-// ===== 7. GLOBAL SUPPORT & PRICING (SYNC TO ALL 4) =====
 window.saveGlobalSupport = async function() {
   const phone = document.getElementById('supPhone').value.trim();
   let telegram = document.getElementById('supTelegram').value.trim();
@@ -1983,13 +1970,11 @@ window.saveGlobalPricing = async function() {
   } catch (e) { toast('❌ ስህተት: ' + e.message, 'error'); }
 };
 
-// ===== 8. EXPORT & BACKUP =====
 window.exportAllCSV = function() {
   const rows = filterByProject(state.accounts);
   if (!rows.length) { toast('ዳታ የለም', 'error'); return; }
   const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  let csv = '﻿ፕሮጀክት,ስም,ፕላን,Owner Email,ስልክ/አድራሻ,ክፍያ (ETB),ማብቂያ ቀን,ሁኔታ
-';
+  let csv = '\uFEFFፕሮጀክት,ስም,ፕላን,Owner Email,ስልክ/አድራሻ,ክፍያ (ETB),ማብቂያ ቀን,ሁኔታ\n';
   rows.forEach(a => {
     csv += [
       q(PROJECTS[a.project].label),
@@ -2000,8 +1985,7 @@ window.exportAllCSV = function() {
       q(a.amount || 0),
       q(a.expiryDate || ''),
       q(a.isSuspended ? 'Suspended' : 'Active')
-    ].join(',') + '
-';
+    ].join(',') + '\n';
   });
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
